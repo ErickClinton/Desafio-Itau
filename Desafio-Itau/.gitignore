@@ -1,0 +1,70 @@
+# Build results
+bin/
+obj/
+out/
+artifacts/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Auto-generated files
+*.generated.cs
+
+# Local history
+.localhistory/
+
+# Rider
+.idea/
+.idea_modules/
+.idea_workspace.xml
+.idea/*.iml
+.idea/httpRequests/
+*.sln.iml
+
+# ReSharper
+_ReSharper*/
+*.DotSettings.user
+
+# Logs
+*.log
+
+# Publish
+publish/
+AppPackages/
+*.appx
+*.appxbundle
+*.msix
+*.msixbundle
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# dotCover
+*.dcvr
+
+# Cache
+*.cache
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# dotenv / configs
+.env
+.env.*
+secrets.json
+
+./*.DS_STORE
