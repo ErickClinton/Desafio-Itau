@@ -26,17 +26,20 @@ namespace DesafioInvestimentosItau.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
 
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("varchar(10)");
+                        .HasColumnType("varchar(10)")
+                        .HasColumnName("code");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("name");
 
                     b.HasKey("Id");
 
@@ -47,22 +50,28 @@ namespace DesafioInvestimentosItau.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("AssetId")
-                        .HasColumnType("char(36)");
+                        .HasColumnType("char(36)")
+                        .HasColumnName("asset_id");
 
                     b.Property<decimal>("AveragePrice")
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,4)")
+                        .HasColumnName("average_price");
 
                     b.Property<decimal>("ProfitLoss")
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,4)")
+                        .HasColumnName("profit_loss");
 
                     b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("quantity");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)");
+                        .HasColumnType("char(36)")
+                        .HasColumnName("user_id");
 
                     b.HasKey("Id");
 
@@ -77,16 +86,20 @@ namespace DesafioInvestimentosItau.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("AssetId")
-                        .HasColumnType("char(36)");
+                        .HasColumnType("char(36)")
+                        .HasColumnName("asset_id");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("timestamp");
 
                     b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,4)")
+                        .HasColumnName("unite_price");
 
                     b.HasKey("Id");
 
@@ -99,28 +112,36 @@ namespace DesafioInvestimentosItau.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
 
                     b.Property<Guid>("AssetId")
-                        .HasColumnType("char(36)");
+                        .HasColumnType("char(36)")
+                        .HasColumnName("asset_id");
 
                     b.Property<decimal>("BrokerageFee")
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("brokerage_fee");
 
                     b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("quantity");
 
                     b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime(6)")
+                        .HasColumnName("timestamp");
 
                     b.Property<int>("Type")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("type");
 
                     b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,4)")
+                        .HasColumnName("unit_price");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)");
+                        .HasColumnType("char(36)")
+                        .HasColumnName("user_id");
 
                     b.HasKey("Id");
 
@@ -135,20 +156,24 @@ namespace DesafioInvestimentosItau.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
+                        .HasColumnType("char(36)")
+                        .HasColumnName("id");
 
                     b.Property<decimal>("BrokerageFee")
-                        .HasColumnType("decimal(5,2)");
+                        .HasColumnType("decimal(5,2)")
+                        .HasColumnName("brokerage_fee");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("varchar(150)");
+                        .HasColumnType("varchar(150)")
+                        .HasColumnName("email");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("name");
 
                     b.HasKey("Id");
 
@@ -161,13 +186,15 @@ namespace DesafioInvestimentosItau.Infrastructure.Migrations
                         .WithMany("Positions")
                         .HasForeignKey("AssetId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_position_asset_id");
 
                     b.HasOne("DesafioInvestimentosItau.Domain.Entities.UserEntity", "User")
                         .WithMany("Positions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_position_user_id");
 
                     b.Navigation("Asset");
 
@@ -180,7 +207,8 @@ namespace DesafioInvestimentosItau.Infrastructure.Migrations
                         .WithMany("Quotes")
                         .HasForeignKey("AssetId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_quote_asset_id");
 
                     b.Navigation("Asset");
                 });
@@ -191,13 +219,15 @@ namespace DesafioInvestimentosItau.Infrastructure.Migrations
                         .WithMany("Trades")
                         .HasForeignKey("AssetId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_trade_asset_id");
 
                     b.HasOne("DesafioInvestimentosItau.Domain.Entities.UserEntity", "User")
                         .WithMany("Trades")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("fk_trade_user_id");
 
                     b.Navigation("Asset");
 
