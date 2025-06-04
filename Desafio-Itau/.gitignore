@@ -1,3 +1,6 @@
+##############
+## .NET Core ##
+##############
 # Build results
 bin/
 obj/
@@ -16,22 +19,23 @@ artifacts/
 # Local history
 .localhistory/
 
-# Rider
+# IIS Express
+.vs/
+*.vspscc
+*.vssscc
+
+# Rider files
 .idea/
-.idea_modules/
-.idea_workspace.xml
-.idea/*.iml
-.idea/httpRequests/
 *.sln.iml
 
-# ReSharper
+# Resharper
 _ReSharper*/
 *.DotSettings.user
 
 # Logs
 *.log
 
-# Publish
+# Publish results
 publish/
 AppPackages/
 *.appx
@@ -39,32 +43,34 @@ AppPackages/
 *.msix
 *.msixbundle
 
-# Test results
+# Test Results
 TestResults/
 *.trx
 *.coverage
 *.coveragexml
 
-# dotCover
+# DotCover
 *.dcvr
 
-# Cache
-*.cache
+# Backup & crash reports
+*.bak
+*.tmp
 
-# NuGet
-*.nupkg
-*.snupkg
-.nuget/
+# Rider plugin configs
+.idea/
+.idea_modules/
+.idea_workspace.xml
+.idea/*.iml
+.idea/httpRequests/
 
-# OS files
+# OS-specific files
 .DS_Store
 Thumbs.db
 ehthumbs.db
 desktop.ini
 
-# dotenv / configs
+# dotenv/config
 .env
 .env.*
 secrets.json
 
-./*.DS_STORE
