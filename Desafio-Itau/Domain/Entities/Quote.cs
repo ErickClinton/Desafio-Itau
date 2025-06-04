@@ -1,6 +1,6 @@
 namespace DesafioInvestimentosItau.Domain.Entities;
 
-public class Quote
+public class QuoteEntity
 {
     public long Id { get; set; }
     public long AssetId { get; set; }

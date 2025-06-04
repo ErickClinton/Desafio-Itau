@@ -7,6 +7,6 @@ public class AssetEntity
     public string Name { get; set; } = string.Empty;
 
     public List<TradeEntity> Trades { get; set; } = new();
-    public List<Quote> Quotes { get; set; } = new();
+    public List<QuoteEntity> Quotes { get; set; } = new();
     public List<PositionEntity> Positions { get; set; } = new();
 }
