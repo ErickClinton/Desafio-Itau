@@ -2,9 +2,9 @@ namespace DesafioInvestimentosItau.Domain.Entities;
 
 public class PositionEntity
 {
-    public long Id { get; set; }
-    public long UserId { get; set; }
-    public long AssetId { get; set; }
+    public Guid Id { get; set; }
+    public Guid UserId { get; set; }
+    public Guid AssetId { get; set; }
 
     public int Quantity { get; set; }
     public decimal AveragePrice { get; set; }

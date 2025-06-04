@@ -12,6 +12,18 @@
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0-preview.3.efcore.9.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Data\Migrations\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Data\Migrations\**\*.cs" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

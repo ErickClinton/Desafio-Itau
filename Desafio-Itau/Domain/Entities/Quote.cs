@@ -2,8 +2,8 @@ namespace DesafioInvestimentosItau.Domain.Entities;
 
 public class QuoteEntity
 {
-    public long Id { get; set; }
-    public long AssetId { get; set; }
+    public Guid Id { get; set; }
+    public Guid AssetId { get; set; }
     public decimal UnitPrice { get; set; }
     public DateTime Timestamp { get; set; }
 

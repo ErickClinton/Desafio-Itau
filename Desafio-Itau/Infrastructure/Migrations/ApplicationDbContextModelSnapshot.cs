@@ -24,11 +24,9 @@ namespace DesafioInvestimentosItau.Infrastructure.Migrations
 
             modelBuilder.Entity("DesafioInvestimentosItau.Domain.Entities.AssetEntity", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -47,14 +45,12 @@ namespace DesafioInvestimentosItau.Infrastructure.Migrations
 
             modelBuilder.Entity("DesafioInvestimentosItau.Domain.Entities.PositionEntity", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("char(36)");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("AssetId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("AssetId")
+                        .HasColumnType("char(36)");
 
                     b.Property<decimal>("AveragePrice")
                         .HasColumnType("decimal(18,4)");
@@ -65,8 +61,8 @@ namespace DesafioInvestimentosItau.Infrastructure.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -79,14 +75,12 @@ namespace DesafioInvestimentosItau.Infrastructure.Migrations
 
             modelBuilder.Entity("DesafioInvestimentosItau.Domain.Entities.QuoteEntity", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("char(36)");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("AssetId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("AssetId")
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime(6)");
@@ -103,14 +97,12 @@ namespace DesafioInvestimentosItau.Infrastructure.Migrations
 
             modelBuilder.Entity("DesafioInvestimentosItau.Domain.Entities.TradeEntity", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("char(36)");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("AssetId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("AssetId")
+                        .HasColumnType("char(36)");
 
                     b.Property<decimal>("BrokerageFee")
                         .HasColumnType("decimal(10,2)");
@@ -127,8 +119,8 @@ namespace DesafioInvestimentosItau.Infrastructure.Migrations
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,4)");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Id");
 
@@ -141,11 +133,9 @@ namespace DesafioInvestimentosItau.Infrastructure.Migrations
 
             modelBuilder.Entity("DesafioInvestimentosItau.Domain.Entities.UserEntity", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<decimal>("BrokerageFee")
                         .HasColumnType("decimal(5,2)");

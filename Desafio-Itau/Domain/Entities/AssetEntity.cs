@@ -2,7 +2,7 @@ namespace DesafioInvestimentosItau.Domain.Entities;
 
 public class AssetEntity
 {
-    public long Id { get; set; }
+    public Guid Id { get; set; }
     public string Code { get; set; } = string.Empty; 
     public string Name { get; set; } = string.Empty;
 
