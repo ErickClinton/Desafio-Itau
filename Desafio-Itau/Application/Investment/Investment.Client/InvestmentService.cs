@@ -69,6 +69,35 @@ public class InvestmentService : IInvestmentService
         _logger.LogInformation("End GetAveragePricePerAssetAsync - Response - {Count} ativos", result.Count);
         return result;
     }
+    
+    public async Task<AveragePriceByAssetDto> CalculateAveragePriceForUserAssetAsync(long userId, string assetCode)
+    {
+        _logger.LogInformation("Start CalculateAveragePriceForUserAssetAsync - UserId: {UserId}, Asset: {AssetCode}", userId, assetCode);
+
+        var trades = await _tradeService.GetBuyTradesByUserAndAssetAsync(userId, assetCode);
+
+        if (trades == null || !trades.Any())
+            throw new ArgumentException("No buy trades found for the specified asset and user.");
+
+        var totalQuantity = trades.Sum(t => t.Quantity);
+        if (totalQuantity == 0)
+            throw new InvalidOperationException("Total quantity must be greater than zero.");
+
+        var totalValue = trades.Sum(t => t.UnitPrice * t.Quantity);
+        var averagePrice = totalValue / totalQuantity;
+        
+        var price = new AveragePriceByAssetDto
+        {
+            AssetCode = assetCode,
+            AveragePrice = averagePrice
+        };
+        
+        _logger.LogInformation("End CalculateAveragePriceForUserAssetAsync - {Price}", price);
+
+        return price;
+    }
+
+    
 
     public async Task<List<AssetPositionDto>> GetUserPositionsAsync(long userId)
     {
