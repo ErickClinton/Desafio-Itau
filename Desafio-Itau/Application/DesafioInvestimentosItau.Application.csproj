@@ -5,8 +5,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Asset\Asset.Client\" />
-    <Folder Include="Asset\Asset.Contract\Interfaces\" />
     <Folder Include="User\User.Contracts\" />
   </ItemGroup>
 
