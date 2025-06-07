@@ -7,11 +7,13 @@
   <ItemGroup>
     <Folder Include="Asset\Asset.Client\" />
     <Folder Include="Asset\Asset.Contract\Interfaces\" />
-    <Folder Include="Position\Position.Client\" />
-    <Folder Include="Position\Position.Contract\DTOs\" />
-    <Folder Include="Trade\Trade.Client\" />
-    <Folder Include="Trade\Trade.Contract\DTOs\" />
     <Folder Include="User\User.Contracts\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
+      <HintPath>..\..\..\.dotnet\packs\Microsoft.AspNetCore.App.Ref\9.0.5\ref\net9.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <PropertyGroup>
