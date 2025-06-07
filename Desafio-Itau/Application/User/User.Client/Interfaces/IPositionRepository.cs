@@ -1,9 +1,9 @@
-using DesafioInvestimentosItau.Application.User.User.Client.DTOs;
+using DesafioInvestimentosItau.Domain.Entities;
 
 namespace DesafioInvestimentosItau.Application.User.User.Client;
 
 public interface IPositionRepository
 {
-    Task<IEnumerable<AssetPositionDto>> GetUserPositionsAsync(long userId);
+    Task<IEnumerable<PositionEntity>> GetUserPositionsAsync(long userId);
     Task<decimal> GetTotalProfitLossAsync(long userId);
 }
