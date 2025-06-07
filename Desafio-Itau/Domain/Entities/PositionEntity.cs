@@ -15,6 +15,9 @@ public class PositionEntity
     public decimal AveragePrice { get; set; }
     public decimal ProfitLoss { get; set; }
 
-    public UserEntity? User { get; set; }
-    public AssetEntity? Asset { get; set; }
+    [Required] 
+    public UserEntity User { get; set; } = null!;
+    
+    [Required]
+    public AssetEntity Asset { get; set; } = null!;
 }

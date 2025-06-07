@@ -18,6 +18,6 @@ public class TradeEntity
     public decimal BrokerageFee { get; set; }
     public DateTime Timestamp { get; set; }
 
-    public UserEntity? User { get; set; }
-    public AssetEntity? Asset { get; set; }
+    public UserEntity User { get; set; } = null!;
+    public AssetEntity Asset { get; set; } = null!;
 }
