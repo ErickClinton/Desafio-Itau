@@ -4,6 +4,16 @@
     <ProjectReference Include="..\Domain\DesafioInvestimentosItau.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Asset\Asset.Client\" />
+    <Folder Include="Asset\Asset.Contract\Interfaces\" />
+    <Folder Include="Position\Position.Client\" />
+    <Folder Include="Position\Position.Contract\DTOs\" />
+    <Folder Include="Trade\Trade.Client\" />
+    <Folder Include="Trade\Trade.Contract\DTOs\" />
+    <Folder Include="User\User.Contracts\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
