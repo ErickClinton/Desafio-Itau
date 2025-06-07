@@ -1,8 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace DesafioInvestimentosItau.Domain.Entities;
 
 public class AssetEntity
 {
-    public Guid Id { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long Id { get; set; }
     public string Code { get; set; } = string.Empty; 
     public string Name { get; set; } = string.Empty;
 

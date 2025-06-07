@@ -17,7 +17,6 @@ public class UserService : IUserService
     {
         var user = new UserEntity
         {
-            Id = Guid.NewGuid(),
             Name = request.Name,
             Email = request.Email,
             BrokerageFee = request.BrokerageFee
