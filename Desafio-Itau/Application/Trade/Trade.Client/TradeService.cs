@@ -34,6 +34,11 @@ public class TradeService : ITradeService
         _logger.LogInformation("End GetGroupedBuyTradesByUserAsync - Found {Count} asset groups", grouped.Count);
         return grouped;
     }
+
+    public async Task<List<TradeEntity>> GetBuyTradesByUserAndAssetAsync(long userId, string assetCode)
+    {
+        return await _tradeRepository.GetBuyTradesByUserAndAssetAsync(userId, assetCode);
+    }
     
     public async Task<decimal> GetTotalBrokerageFeeAsync(long userId)
     {

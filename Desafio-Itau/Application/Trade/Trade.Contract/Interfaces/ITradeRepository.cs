@@ -8,4 +8,5 @@ public interface ITradeRepository
     Task<decimal> GetTotalInvestedAsync(long userId);
     Task<decimal> GetTotalBrokerageFeeAsync(long userId);
     Task<List<TradeEntity>>GetGroupedBuyTradesByUserAsync(long userId);
+    Task<List<TradeEntity>> GetBuyTradesByUserAndAssetAsync(long userId, string assetCode);
 }
