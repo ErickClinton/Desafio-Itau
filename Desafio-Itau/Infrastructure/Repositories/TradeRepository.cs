@@ -1,4 +1,5 @@
 using DesafioInvestimentosItau.Application.User.User.Client;
+using DesafioInvestimentosItau.Domain.Entities;
 using DesafioInvestimentosItau.Domain.Enums;
 using DesafioInvestimentosItau.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +15,18 @@ public class TradeRepository : ITradeRepository
         _context = context;
     }
     
+    public async Task<List<TradeEntity>> GetGroupedBuyTradesByUserAsync(long userId)
+    {
+        return await _context.Trades
+            .Include(t => t.Asset)
+            .Where(t => t.UserId == userId && t.Type == TradeTypeEnum.Buy)
+            .ToListAsync();
+    }
     public async Task<decimal> GetTotalInvestedAsync(long userId)
     {
         
         return await _context.Trades.Where(t => t.UserId == userId && t.Type == TradeTypeEnum.Buy)
-            .SumAsync(t => t.UnitPrice * t.Quantity);
+            .SumAsync(t => t.UnitPrice * t.Quantity + t.BrokerageFee);
     }
 
     public async Task<decimal> GetTotalBrokerageFeeAsync(long userId)
