@@ -26,4 +26,14 @@ public class TradeController : ControllerBase
 
         return Ok(new { message = "Trade de compra registrada com sucesso." });
     }
+    
+    [HttpGet("{userId}")]
+    public async Task<IActionResult> GetTotalBrokerageFee(long userId)
+    {
+        _logger.LogInformation("Received request to trade for asset {AssetCode}",userId);
+
+        var result = await _tradeService.GetTotalBrokerageFeeAsync(userId);
+
+        return Ok(result);
+    }
 }

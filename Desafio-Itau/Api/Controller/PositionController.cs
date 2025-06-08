@@ -1,5 +1,6 @@
 using DesafioInvestimentosItau.Application.Position.Position.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.Interfaces;
+using DesafioInvestimentosItau.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DesafioInvestimentosItau.Api.Controller;
@@ -27,5 +28,13 @@ public class PositionController : ControllerBase
         {
             return NotFound(new { message = ex.Message });
         }
+    }
+
+    [HttpPost("find-position")]
+    public async Task<ActionResult<PositionEntity?>> GetByUserAndAssetAsync(GetByUserAndAssetDto getByUserAndAssetDto)
+    {
+        var result = await _positionService.GetByUserAndAssetAsync(getByUserAndAssetDto.UserId, getByUserAndAssetDto.AssetCode);
+        if(result != null) return Ok(result);
+        return NotFound(new { message = "User or asset not found" });
     }
 }
