@@ -1,4 +1,4 @@
-using DesafioInvestimentosItau.Application.User.User.Client;
+using DesafioInvestimentosItau.Application.Position.Position.Contract.Interfaces;
 using DesafioInvestimentosItau.Domain.Entities;
 using DesafioInvestimentosItau.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +12,26 @@ public class PositionRepository : IPositionRepository
     public PositionRepository(ApplicationDbContext context)
     {
         _context = context;
+    }
+    
+    public async Task<PositionEntity> CreateAsync(PositionEntity position)
+    {
+        _context.Positions.Add(position);
+        await _context.SaveChangesAsync();
+        return position;
+    }
+    
+    public async Task<PositionEntity?> GetByUserAndAssetAsync(long userId, long assetId)
+    {
+        return await _context.Positions
+            .Include(p => p.Asset)
+            .FirstOrDefaultAsync(p => p.UserId == userId && p.AssetId == assetId);
+    }
+    
+    public async Task UpdateAsync(PositionEntity position)
+    {
+        _context.Positions.Update(position);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<PositionEntity>> GetUserPositionsAsync(long userId)
@@ -30,5 +50,13 @@ public class PositionRepository : IPositionRepository
             .SumAsync();
 
         return result ?? 0m;
+    }
+    
+    public async Task<PositionEntity?> GetAveragePriceAsync(long userId, string assetCode)
+    {
+        return await _context.Positions
+            .Include(p => p.Asset)
+            .Where(p => p.UserId == userId && p.Asset.Code == assetCode)
+            .FirstOrDefaultAsync();
     }
 }

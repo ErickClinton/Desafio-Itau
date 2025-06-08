@@ -1,7 +1,7 @@
-using DesafioInvestimentosItau.Application.Position.Position.Contract;
+using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Dtos;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.DTOs;
-using DesafioInvestimentosItau.Application.User.User.Client;
-using DesafioInvestimentosItau.Application.User.User.Client.DTOs;
+using DesafioInvestimentosItau.Application.Position.Position.Contract.Interfaces;
+using DesafioInvestimentosItau.Domain.Entities;
 using Microsoft.Extensions.Logging;
 
 namespace DesafioInvestimentosItau.Application.Position.Position.Client;
@@ -17,6 +17,40 @@ public class PositionService : IPositionService
     {
         _positionRepository = positionRepository;
         _logger = logger;
+    }
+    
+    public async Task<PositionEntity> CreateAsync(PositionCreateDto position)
+    {
+        _logger.LogInformation("Creating position for AssetId: {AssetId}, UserId: {UserId}", position.AssetId, position.UserId);
+        var newPosition = new PositionEntity()
+        {
+            UserId = position.UserId,
+            AssetId = position.AssetId,
+            Quantity = position.Quantity,
+            AveragePrice = position.AveragePrice,
+            ProfitLoss = 0
+        };
+        return await _positionRepository.CreateAsync(newPosition);
+    }
+
+    public async Task<AveragePriceResponse> GetAveragePriceAsync(AveragePriceRequest averagePriceRequest)
+    {
+        var averagePrice = await _positionRepository.GetAveragePriceAsync(averagePriceRequest.UserId,averagePriceRequest.AssetCode);
+        if(averagePrice == null) throw new ApplicationException("The average price was not found");
+        return new AveragePriceResponse()
+            { AssetCode = averagePriceRequest.AssetCode, AveragePrice = averagePrice.AveragePrice };
+    }
+    
+    public async Task UpdateAsync(PositionEntity position)
+    {
+        _logger.LogInformation("Updating position with ID {PositionId}", position.Id);
+        await _positionRepository.UpdateAsync(position);
+        _logger.LogInformation("Position updated successfully.");
+    }
+    
+    public async Task<PositionEntity?> GetByUserAndAssetAsync(long userId, long assetId)
+    {
+        return await _positionRepository.GetByUserAndAssetAsync(userId, assetId);
     }
 
     public async Task<List<AssetPositionDto>> GetUserPositionsAsync(long userId)
