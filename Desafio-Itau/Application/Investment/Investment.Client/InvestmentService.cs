@@ -2,7 +2,7 @@ using DesafioInvestimentosItau.Application.Investment.Investment.Contract.Interf
 using DesafioInvestimentosItau.Application.Position.Position.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Trade.Trade.Contract.DTOs;
-using DesafioInvestimentosItau.Application.User.User.Client;
+using DesafioInvestimentosItau.Application.Trade.Trade.Contract.Interfaces;
 using DesafioInvestimentosItau.Domain.Entities;
 using Microsoft.Extensions.Logging;
 
