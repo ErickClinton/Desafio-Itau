@@ -11,5 +11,5 @@ public interface IPositionRepository
     Task UpdateAsync(PositionEntity position);
     Task<PositionEntity?> GetByUserAndAssetAsync(long userId, string assetCode);
     Task<PositionEntity?> GetAveragePriceAsync(long userId, string assetCode);
-
+    Task<List<TopPositionDto>> GetTopUserPositionsAsync(int top);
 }

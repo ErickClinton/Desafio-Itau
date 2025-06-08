@@ -63,6 +63,14 @@ public class TradeService : ITradeService
         _logger.LogInformation("End method GetTotalBrokerageFeeAsync - Response - {Total}", total);
         return total;
     }
-
     
+    public async Task<decimal> GetTotalBrokerageAsync()
+    {
+        return await _tradeRepository.GetTotalBrokerageAsync();
+    }
+
+    public async Task<List<TopBrokerageDto>> GetTopUserBrokeragesAsync(int top)
+    {
+        return await _tradeRepository.GetTopUserBrokeragesAsync(top);
+    }
 }

@@ -9,4 +9,7 @@ public interface ITradeService
     Task<List<GroupedTradesByAssetDto>> GetGroupedBuyTradesByUserAsync(long userId);
     Task<List<TradeEntity>> GetBuyTradesByUserAndAssetAsync(long userId, string assetCode);
     Task CreateTrade(CreateTradeRequestDto request);
+    Task<decimal> GetTotalBrokerageAsync();
+    Task<List<TopBrokerageDto>> GetTopUserBrokeragesAsync(int top);
+    
 }

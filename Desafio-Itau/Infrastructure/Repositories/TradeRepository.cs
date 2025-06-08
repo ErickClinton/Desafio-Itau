@@ -1,3 +1,4 @@
+using DesafioInvestimentosItau.Application.Trade.Trade.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Trade.Trade.Contract.Interfaces;
 using DesafioInvestimentosItau.Domain.Entities;
 using DesafioInvestimentosItau.Domain.Enums;
@@ -39,7 +40,6 @@ public class TradeRepository : ITradeRepository
     }
     public async Task<decimal> GetTotalInvestedAsync(long userId)
     {
-        
         return await _context.Trades.Where(t => t.UserId == userId && t.Type == TradeTypeEnum.Buy)
             .SumAsync(t => t.UnitPrice * t.Quantity + t.BrokerageFee);
     }
@@ -49,5 +49,40 @@ public class TradeRepository : ITradeRepository
         return await _context.Trades
             .Where(t => t.UserId == userId)
             .SumAsync(t => t.BrokerageFee);
+    }
+    
+    public async Task<decimal> GetTotalBrokerageAsync()
+    {
+        return await _context.Trades.SumAsync(t => t.BrokerageFee);
+    }
+    
+    public async Task<List<TopBrokerageDto>> GetTopUserBrokeragesAsync(int top)
+    {
+        // Primeiro, calcula os top usuários com maior corretagem somada
+        var topUserIds = await _context.Trades
+            .GroupBy(t => t.UserId)
+            .Select(g => new
+            {
+                UserId = g.Key,
+                TotalBrokerage = g.Sum(t => t.BrokerageFee)
+            })
+            .OrderByDescending(x => x.TotalBrokerage)
+            .Take(top)
+            .Select(x => x.UserId)
+            .ToListAsync();
+
+        var result = await _context.Trades
+            .GroupBy(t => new { t.UserId, t.User.Name,t.User.Email })
+            .Select(g => new TopBrokerageDto()
+            {
+                UserId = g.Key.UserId,
+                UserName = g.Key.Name,
+                Email = g.Key.Email,
+                TotalBrokerage = g.Sum(t => t.BrokerageFee)
+            })
+            .OrderByDescending(g => g.TotalBrokerage)
+            .Take(10)
+            .ToListAsync();
+        return result;
     }
 }

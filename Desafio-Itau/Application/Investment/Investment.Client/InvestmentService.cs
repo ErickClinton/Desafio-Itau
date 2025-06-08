@@ -1,3 +1,4 @@
+using DesafioInvestimentosItau.Application.Investment.Investment.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Investment.Investment.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.Interfaces;
@@ -98,6 +99,46 @@ public class InvestmentService : IInvestmentService
 
         _logger.LogInformation("End GetUserPositionsAsync - Response - {Count} posições", result.Count);
         return result;
+    }
+    
+    public async Task<TopInvestmentsResponseDto> GetTopUserStatsAsync(int top)
+    {
+        var positions = await _positionService.GetTopUserPositionsAsync(top);
+        var brokerages = await _tradeService.GetTopUserBrokeragesAsync(top);
+
+        var topByQuantity = new List<TopPositionsResponseDto>();
+        var topByBrokerage = new List<TopBrokerageFeeResponseDto>();
+
+        foreach (var p in positions)
+        {
+
+            topByQuantity.Add(new TopPositionsResponseDto
+            {
+                UserId = p.UserId,
+                Name = p.UserName,
+                Email = p.Email,
+                TotalQuantity = p.TotalQuantity,
+                TotalValue = p.TotalValue
+            });
+        }
+
+        foreach (var b in brokerages)
+        {
+
+            topByBrokerage.Add(new TopBrokerageFeeResponseDto
+            {
+                UserId = b.UserId,
+                Name = b.UserName,
+                Email = b.Email,
+                TotalBrokerage = b.TotalBrokerage
+            });
+        }
+
+        return new TopInvestmentsResponseDto
+        {
+            TopByQuantity = topByQuantity,
+            TopByBrokerage = topByBrokerage
+        };
     }
 
     private decimal CalculateTotalInvested(List<TradeEntity> trades)

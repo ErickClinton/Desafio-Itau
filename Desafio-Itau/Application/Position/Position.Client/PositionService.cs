@@ -89,6 +89,10 @@ public class PositionService : IPositionService
         _logger.LogInformation("End GetGlobalPositionAsync - Response - {GlobalPosition}", globalPosition);
 
         return globalPosition;
+    }
 
+    public async Task<List<TopPositionDto>> GetTopUserPositionsAsync(int top)
+    {
+        return await _positionRepository.GetTopUserPositionsAsync(top);
     }
 }

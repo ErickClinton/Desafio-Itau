@@ -1,3 +1,4 @@
+using DesafioInvestimentosItau.Application.Position.Position.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.Interfaces;
 using DesafioInvestimentosItau.Domain.Entities;
 using DesafioInvestimentosItau.Infrastructure.Data;
@@ -48,6 +49,25 @@ public class PositionRepository : IPositionRepository
             .SumAsync();
 
         return result ?? 0m;
+    }
+    
+    public async Task<List<TopPositionDto>> GetTopUserPositionsAsync(int top)
+    {
+        var result = await _context.Positions
+            .GroupBy(p => new { p.UserId, p.User.Name, p.User.Email })
+            .Select(g => new TopPositionDto
+            {
+                UserId = g.Key.UserId,
+                UserName = g.Key.Name,
+                Email = g.Key.Email,
+                TotalQuantity = g.Sum(p => p.Quantity),
+                TotalValue = g.Sum(p => p.Quantity * p.AveragePrice)
+            })
+            .OrderByDescending(x => x.TotalQuantity)
+            .Take(top)
+            .ToListAsync();
+
+        return result;
     }
     
     public async Task<PositionEntity?> GetAveragePriceAsync(long userId, string assetCode)
