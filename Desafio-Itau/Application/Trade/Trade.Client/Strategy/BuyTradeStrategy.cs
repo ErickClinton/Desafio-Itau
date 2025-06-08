@@ -1,3 +1,4 @@
+using DesafioInvestimentosItau.Application.Exceptions;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Quote.Quote.Contract.Interfaces;
@@ -37,10 +38,10 @@ public class BuyTradeStrategy : ITradeStrategy
         _logger.LogInformation($"Start service BuyTradeStrategy - Request -  {dto}");
 
         var user = await _userService.GetByIdAsync(dto.UserId)
-                   ?? throw new Exception($"User {dto.UserId} not found");
+                   ?? throw new UserNotFoundException(dto.UserId);
 
         var asset = await _quoteService.SearchQuote(dto.AssetCode)
-                    ?? throw new Exception($"AssetCode {dto.AssetCode} not found");
+                    ?? throw new FallBackException(dto.AssetCode);
 
         var trade = new TradeEntity(
             user.Id,

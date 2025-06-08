@@ -1,3 +1,4 @@
+using DesafioInvestimentosItau.Application.Exceptions;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.Interfaces;
 using DesafioInvestimentosItau.Domain.Entities;
@@ -34,15 +35,15 @@ public class PositionService : IPositionService
         return response;
     }
 
-    public async Task<AveragePriceResponse> GetAveragePriceAsync(AveragePriceRequest averagePriceRequest)
+    public async Task<AveragePriceResponse> GetAveragePriceAsync(string assetCode, long userId )
     {
-        _logger.LogInformation($"Start service GetAveragePriceAsync - Request - {averagePriceRequest}");
+        _logger.LogInformation($"Start service GetAveragePriceAsync - Request - {assetCode} - {userId}");
         
-        var averagePrice = await _positionRepository.GetAveragePriceAsync(averagePriceRequest.UserId,averagePriceRequest.AssetCode);
-        if(averagePrice == null) throw new ApplicationException("The average price was not found");
+        var averagePrice = await _positionRepository.GetAveragePriceAsync(userId,assetCode);
+        if(averagePrice == null) throw new AveragePriceException(assetCode,userId);
         
         var response = new AveragePriceResponse()
-            { AssetCode = averagePriceRequest.AssetCode, AveragePrice = averagePrice.AveragePrice };
+            { AssetCode = assetCode, AveragePrice = averagePrice.AveragePrice };
         _logger.LogInformation($"End service GetAveragePriceAsync - Response - {response}");
         return response;
     }

@@ -1,3 +1,4 @@
+using DesafioInvestimentosItau.Application.Exceptions;
 using DesafioInvestimentosItau.Application.Investment.Investment.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Investment.Investment.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.DTOs;
@@ -47,9 +48,15 @@ public class InvestmentService : IInvestmentService
     
     public async Task<TopInvestmentsResponseDto> GetTopUserStatsAsync(int top)
     {
+        if (top <= 0)
+            throw new BusinessRuleException("Parameter 'top' must be greater than zero.");
+        
         _logger.LogInformation($"Start service GetTopUserStatsAsync - Request - {top}");
         var positions = await _positionService.GetTopUserPositionsAsync(top);
         var brokerages = await _tradeService.GetTopUserBrokeragesAsync(top);
+        
+        if (!positions.Any() && !brokerages.Any())
+            throw new BusinessRuleException("No investment data found for any user.");
 
         var topByQuantity = new List<TopPositionsResponseDto>();
         var topByBrokerage = new List<TopBrokerageFeeResponseDto>();
@@ -92,12 +99,10 @@ public class InvestmentService : IInvestmentService
     private decimal CalculateTotalInvested(List<TradeEntity> trades)
     {
         decimal total = 0;
-
         foreach (var trade in trades)
         {
             total += (trade.UnitPrice * trade.Quantity) + trade.BrokerageFee;
         }
-
         return total;
     }
 }

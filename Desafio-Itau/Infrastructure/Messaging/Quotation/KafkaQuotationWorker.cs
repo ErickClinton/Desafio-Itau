@@ -101,6 +101,7 @@ public class KafkaQuotationWorker : BackgroundService
         {
             await transaction.RollbackAsync();
             _logger.LogError(ex, "Error processing quotation. Transaction rolled back.");
+            throw new Exception("Error in consumer kafka");
         }
     }
 }

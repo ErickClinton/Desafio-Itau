@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using DesafioInvestimentosItau.Application.Exceptions;
 using DesafioInvestimentosItau.Application.Quote.Quote.Contract.Quote.Contract.DTOs;
 using Microsoft.Extensions.Logging;
 
@@ -16,20 +17,20 @@ public class QuoteInternalService:IQuoteInternalService
         _httpClient = httpClient;
         _logger = logger;
     }
-    public async Task<B3QuotationResponseDto> GetQuotationByAssetCodeAsync(string assetName)
+    public async Task<B3QuotationResponseDto> GetQuotationByAssetCodeAsync(string assetCode)
     {
-        _logger.LogInformation($"Start Internal GetQuotationByAssetCodeAsync - Request - {assetName}");
-        var response = await _httpClient.GetAsync($"api/Assets/{assetName}");
+        _logger.LogInformation($"Start Internal GetQuotationByAssetCodeAsync - Request - {assetCode}");
+        var response = await _httpClient.GetAsync($"api/Assets/{assetCode}");
 
         if (response.StatusCode == HttpStatusCode.NotFound)
-            throw new Exception($"O ativo '{assetName}' não foi encontrado na B3.");
+            throw new AssetNotFoundB3Exception(assetCode);
 
         response.EnsureSuccessStatusCode();
 
         var data = await response.Content.ReadFromJsonAsync<B3QuotationResponseDto>();
 
         if (data == null)
-            throw new Exception("Resposta da API inválida.");
+            throw new Exception("Response Api is null");
         _logger.LogInformation($"End Internal GetQuotationByAssetCodeAsync - Response - {data}");
         return data;
     }

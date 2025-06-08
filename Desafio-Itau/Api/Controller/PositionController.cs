@@ -18,19 +18,12 @@ public class PositionController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost("average-price")]
-    public async Task<ActionResult<AveragePriceResponse>> GetAveragePrice([FromBody] AveragePriceRequest request)
+    [HttpGet("average-price")]
+    public async Task<ActionResult<AveragePriceResponse>> GetAveragePrice([FromQuery] string assetCode, [FromQuery] long userId)
     {
-        _logger.LogInformation($"Start method GetAveragePrice - Request - {request}");
-        try
-        {
-            var result = await _positionService.GetAveragePriceAsync(request);
-            return Ok(result);
-        }
-        catch (ApplicationException ex)
-        {
-            return NotFound(new { message = ex.Message });
-        }
+        _logger.LogInformation($"Start method GetAveragePrice - Request - {assetCode} - {userId}");
+        var result = await _positionService.GetAveragePriceAsync(assetCode, userId);
+        return Ok(result);
     }
     
     [HttpGet("user/{userId}/position")]

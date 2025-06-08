@@ -1,4 +1,5 @@
 using System.Text.Json;
+using DesafioInvestimentosItau.Application.Exceptions;
 using DesafioInvestimentosItau.Application.Kafka.Kafka.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Quote.Quote.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Quote.Quote.Contract.Interfaces;
@@ -66,7 +67,7 @@ public class QuoteService : IQuoteService
             }
 
             _logger.LogError("No fallback quote available in database for asset {AssetCode}", assetCode);
-            throw new Exception($"Unable to fetch quote for asset code {assetCode} from API or fallback.");
+            throw new FallBackException($"Unable to fetch quote for asset code {assetCode} from API or fallback.");
         }
     }
 

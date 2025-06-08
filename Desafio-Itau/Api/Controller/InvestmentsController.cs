@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DesafioInvestimentosItau.Api.Controller;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/investments")]
 public class InvestmentsController : ControllerBase
 {
     private readonly IInvestmentService _investmentService;

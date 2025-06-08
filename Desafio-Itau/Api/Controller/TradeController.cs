@@ -23,7 +23,7 @@ public class TradeController : ControllerBase
         _logger.LogInformation($"Start method CreateBuyTrade - Request - {request}");
         await _tradeService.CreateTrade(request);
 
-        return Ok(new { message = "Trade de compra registrada com sucesso." });
+        return Created(string.Empty, new { message = "Buy trade successfully recorded." });
     }
     
     [HttpGet("{userId}")]

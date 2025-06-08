@@ -1,3 +1,4 @@
+using DesafioInvestimentosItau.Api.Middleware;
 using DesafioInvestimentosItau.Application.Investment.Investment.Client;
 using DesafioInvestimentosItau.Application.Investment.Investment.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Kafka.Kafka.Contract.Interfaces;
@@ -84,7 +85,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging() || app.Enviro
         c.RoutePrefix = string.Empty;
     });
 }
-
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

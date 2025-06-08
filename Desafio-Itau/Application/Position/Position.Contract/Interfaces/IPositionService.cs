@@ -11,6 +11,6 @@ public interface IPositionService
     Task UpdateAsync(PositionEntity position);
     
     Task<PositionEntity?> GetByUserAndAssetAsync(long userId, string assetCode);
-    Task<AveragePriceResponse> GetAveragePriceAsync(AveragePriceRequest request);
+    Task<AveragePriceResponse> GetAveragePriceAsync(string assetCode, long userId);
     Task<List<TopPositionDto>> GetTopUserPositionsAsync(int top);
 }
