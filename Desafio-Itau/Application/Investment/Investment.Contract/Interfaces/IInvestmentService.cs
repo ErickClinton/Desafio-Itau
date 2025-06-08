@@ -1,3 +1,4 @@
+using DesafioInvestimentosItau.Application.Investment.Investment.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Trade.Trade.Contract.DTOs;
 
@@ -7,4 +8,5 @@ public interface IInvestmentService
 {
     Task<List<TotalInvestedByAssetDto>> GetAllInvestmentsByUserIdAsync(long userId);
     Task<List<AssetPositionDto>> GetUserPositionsAsync(long userId);
+    Task<TopInvestmentsResponseDto> GetTopUserStatsAsync(int top);
 }

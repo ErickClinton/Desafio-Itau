@@ -30,4 +30,11 @@ public class InvestmentsController : ControllerBase
         var result = await _investmentService.GetUserPositionsAsync(userId);
         return Ok(result);
     }
+    
+    [HttpGet("top/{top}")]
+    public async Task<ActionResult<List<TotalInvestedByAssetDto>>> GetTopInvestments(int top)
+    {
+        var result = await _investmentService.GetTopUserStatsAsync(top);
+        return Ok(result);
+    }
 }
