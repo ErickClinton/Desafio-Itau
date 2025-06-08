@@ -20,4 +20,15 @@ public class TradeEntity
 
     public UserEntity User { get; set; } = null!;
     public AssetEntity Asset { get; set; } = null!;
+    
+    public TradeEntity(long userId, long assetId, int quantity, decimal unitPrice, decimal brokerageFee, TradeTypeEnum type)
+    {
+        UserId = userId;
+        AssetId = assetId;
+        Quantity = quantity;
+        UnitPrice = unitPrice;
+        BrokerageFee = brokerageFee;
+        Type = type;
+        Timestamp = DateTime.UtcNow;
+    }
 }
