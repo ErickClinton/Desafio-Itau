@@ -14,7 +14,13 @@ public class TradeRepository : ITradeRepository
     {
         _context = context;
     }
-    
+
+    public async Task<TradeEntity> CreateAsync(TradeEntity trade)
+    {
+        _context.Trades.Add(trade);
+        await _context.SaveChangesAsync();
+        return trade;
+    }
     public async Task<List<TradeEntity>> GetBuyTradesByUserAndAssetAsync(long userId, string assetCode)
     {
         return await _context.Trades
