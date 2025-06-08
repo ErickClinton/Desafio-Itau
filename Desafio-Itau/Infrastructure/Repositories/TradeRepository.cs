@@ -1,4 +1,4 @@
-using DesafioInvestimentosItau.Application.User.User.Client;
+using DesafioInvestimentosItau.Application.Trade.Trade.Contract.Interfaces;
 using DesafioInvestimentosItau.Domain.Entities;
 using DesafioInvestimentosItau.Domain.Enums;
 using DesafioInvestimentosItau.Infrastructure.Data;

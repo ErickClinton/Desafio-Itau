@@ -1,5 +1,5 @@
 using DesafioInvestimentosItau.Application.Trade.Trade.Contract.DTOs;
-using DesafioInvestimentosItau.Application.User.User.Client;
+using DesafioInvestimentosItau.Application.Trade.Trade.Contract.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DesafioInvestimentosItau.Api.Controller;
@@ -17,12 +17,12 @@ public class TradeController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost("buy")]
+    [HttpPost("")]
     public async Task<IActionResult> CreateBuyTrade([FromBody] CreateTradeRequestDto request)
     {
-        _logger.LogInformation("Received request to buy trade for asset {AssetCode}", request.AssetCode);
+        _logger.LogInformation("Received request to trade for asset {AssetCode}", request.AssetCode);
 
-        await _tradeService.CreateBuyTrade(request);
+        await _tradeService.CreateTrade(request);
 
         return Ok(new { message = "Trade de compra registrada com sucesso." });
     }
