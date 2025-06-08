@@ -29,6 +29,13 @@ public class PositionController : ControllerBase
             return NotFound(new { message = ex.Message });
         }
     }
+    
+    [HttpGet("user/{userId}/position")]
+    public async Task<ActionResult<List<PositionEntity>>> GetAllPositionsByUserAsync(long userId)
+    {
+        var allPositions = await _positionService.GetUserPositionsAsync(userId);
+        return Ok(allPositions);
+    }
 
     [HttpPost("find-position")]
     public async Task<ActionResult<PositionEntity?>> GetByUserAndAssetAsync(GetByUserAndAssetDto getByUserAndAssetDto)
