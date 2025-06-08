@@ -10,6 +10,8 @@ using DesafioInvestimentosItau.Application.Trade.Trade.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.Interfaces;
 using DesafioInvestimentosItau.Domain.Enums;
 
+namespace DesafioInvestimentosItau.Tests;
+
 public class TradeServiceTests
 {
     private readonly Mock<ITradeRepository> _tradeRepositoryMock;
