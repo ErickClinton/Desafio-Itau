@@ -13,16 +13,15 @@ namespace DesafioInvestimentosItau.Infrastructure.Messaging.Quotation;
 public class KafkaQuotationWorker : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
-    private readonly IKafkaConsumer _kafkaConsumer;
     private readonly ILogger<KafkaQuotationWorker> _logger;
-
+    private readonly IKafkaConsumer _kafkaConsumer;
     public KafkaQuotationWorker(
         IServiceScopeFactory scopeFactory,
-        IKafkaConsumer kafkaConsumer,
+        IKafkaConsumerFactory kafkaConsumerFactory,
         ILogger<KafkaQuotationWorker> logger)
     {
         _scopeFactory = scopeFactory;
-        _kafkaConsumer = kafkaConsumer;
+        _kafkaConsumer = kafkaConsumerFactory.Create("quotation-consumer");
         _logger = logger;
     }
 
