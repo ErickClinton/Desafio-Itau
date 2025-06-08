@@ -1,3 +1,4 @@
+using DesafioInvestimentosItau.Application.Investment.Investment.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Investment.Investment.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Trade.Trade.Contract.DTOs;

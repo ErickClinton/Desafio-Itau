@@ -1,4 +1,4 @@
-namespace DesafioInvestimentosItau.Application.Trade.Trade.Contract.DTOs;
+namespace DesafioInvestimentosItau.Application.Investment.Investment.Contract.DTOs;
 
 public class TotalInvestedByAssetDto
 {
