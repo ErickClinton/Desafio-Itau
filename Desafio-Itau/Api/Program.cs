@@ -11,6 +11,7 @@ using DesafioInvestimentosItau.Application.Trade.Trade.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.User.User.Client;
 using DesafioInvestimentosItau.Application.User.User.Contracts.Interfaces;
 using DesafioInvestimentosItau.Infrastructure.Data;
+using DesafioInvestimentosItau.Infrastructure.Helpers.Converters;
 using DesafioInvestimentosItau.Infrastructure.Http;
 using DesafioInvestimentosItau.Infrastructure.Messaging;
 using DesafioInvestimentosItau.Infrastructure.Messaging.Quotation;
@@ -44,8 +45,14 @@ builder.Services.AddScoped<ITradeFactory, TradeFactory>();
 builder.Services.AddScoped<BuyTradeStrategy>();
 builder.Services.AddScoped<SellTradeStrategy>();
 
-// Internal
 
+//Helpers
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringDecimalConverter());
+    });
+// Internal
 builder.Services.AddHttpClient<IQuoteInternalService, QuoteInternalService>(client =>
     {
         client.BaseAddress = new Uri("https://b3api.vercel.app/");
