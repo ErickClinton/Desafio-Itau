@@ -1,4 +1,20 @@
+using DesafioInvestimentosItau.Application.Asset.Asset.Client;
+using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Interfaces;
+using DesafioInvestimentosItau.Application.Investment.Investment.Client;
+using DesafioInvestimentosItau.Application.Investment.Investment.Contract.Interfaces;
+using DesafioInvestimentosItau.Application.Kafka.Kafka.Contract.Interfaces;
+using DesafioInvestimentosItau.Application.Position.Position.Client;
+using DesafioInvestimentosItau.Application.Position.Position.Contract.Interfaces;
+using DesafioInvestimentosItau.Application.Quote.Quote.Client;
+using DesafioInvestimentosItau.Application.Quote.Quote.Contract.Interfaces;
+using DesafioInvestimentosItau.Application.Trade.Trade.Client;
+using DesafioInvestimentosItau.Application.User.User.Client;
+using DesafioInvestimentosItau.Application.User.User.Contracts.Interfaces;
 using DesafioInvestimentosItau.Infrastructure.Data;
+using DesafioInvestimentosItau.Infrastructure.Http;
+using DesafioInvestimentosItau.Infrastructure.Messaging;
+using DesafioInvestimentosItau.Infrastructure.Messaging.Quotation;
+using DesafioInvestimentosItau.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +29,36 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     )
 );
+
+// Services
+builder.Services.AddScoped<IAssetService, AssetService>();
+builder.Services.AddScoped<IQuoteService, QuoteService>();
+builder.Services.AddScoped<IPositionService, PositionService>();
+builder.Services.AddScoped<ITradeService, TradeService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+// Internal
+
+builder.Services.AddHttpClient<IQuoteInternalService, QuoteInternalService>(client =>
+    {
+        client.BaseAddress = new Uri("https://b3api.vercel.app/");
+    })
+    .AddPolicyHandler(HttpPolicies.GetCircuitBreakerPolicy())
+    .AddPolicyHandler(HttpPolicies.GetFallbackPolicy());
+
+// Repositories
+builder.Services.AddScoped<IAssetRepository, AssetRepository>();
+builder.Services.AddScoped<IQuoteRepository, QuoteRepository>();
+builder.Services.AddScoped<IPositionRepository, PositionRepository>();
+builder.Services.AddScoped<ITradeRepository, TradeRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IInvestmentService, InvestmentService>();
+
+// Kafka
+builder.Services.AddSingleton<IKafkaConsumer, KafkaConsumer>();
+builder.Services.AddHostedService<KafkaQuotationWorker>();
+builder.Services.AddSingleton<IKafkaProducer, KafkaProducer>();
+
 
 var app = builder.Build();
 
