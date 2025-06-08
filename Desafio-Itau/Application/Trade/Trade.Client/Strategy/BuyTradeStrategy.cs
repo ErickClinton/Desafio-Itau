@@ -78,7 +78,8 @@ public class BuyTradeStrategy : ITradeStrategy
     {
         var totalQtd = position.Quantity + createTradeRequestDto.Quantity;
         var totalValue = (position.Quantity * position.AveragePrice) + (createTradeRequestDto.Quantity * createTradeRequestDto.UnitPrice + brokerageFee)/totalQtd;
-        
+        if (totalQtd <= 0)
+            throw new ArgumentException("Total quantity must be greater than zero.");
         position.UpdatePosition(totalQtd, totalValue);
         await _positionService.UpdateAsync(position);
     }
