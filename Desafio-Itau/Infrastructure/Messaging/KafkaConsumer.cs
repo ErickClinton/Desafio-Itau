@@ -9,18 +9,10 @@ public class KafkaConsumer : IKafkaConsumer, IDisposable
     private readonly IConsumer<Ignore, string> _consumer;
     private readonly ILogger<KafkaConsumer> _logger;
 
-    public KafkaConsumer(ILogger<KafkaConsumer> logger)
+    public KafkaConsumer(IConsumer<Ignore, string> consumer, ILogger<KafkaConsumer> logger)
     {
+        _consumer = consumer;
         _logger = logger;
-
-        var config = new ConsumerConfig
-        {
-            BootstrapServers = "localhost:9092",
-            GroupId = "quotation-consumer",
-            AutoOffsetReset = AutoOffsetReset.Earliest
-        };
-
-        _consumer = new ConsumerBuilder<Ignore, string>(config).Build();
     }
 
     public void Subscribe(string topic)
@@ -36,7 +28,10 @@ public class KafkaConsumer : IKafkaConsumer, IDisposable
         {
             try
             {
+                _logger.LogInformation("Waiting for Kafka message...");
                 var result = _consumer.Consume(cancellationToken);
+                _logger.LogInformation("Kafka message received from topic {Topic}, partition {Partition}, offset {Offset}",
+                    result.Topic, result.Partition, result.Offset);
                 return result?.Message?.Value;
             }
             catch (OperationCanceledException)
