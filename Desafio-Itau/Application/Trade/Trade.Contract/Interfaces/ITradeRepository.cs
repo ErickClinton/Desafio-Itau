@@ -12,4 +12,7 @@ public interface ITradeRepository
     Task<List<TradeEntity>> GetBuyTradesByUserAndAssetAsync(long userId, string assetCode);
     Task<decimal> GetTotalBrokerageAsync();
     Task<List<TopBrokerageDto>> GetTopUserBrokeragesAsync(int top);
+    Task<List<TradeEntity>> GetBuyTradesByAssetAsync(string assetCode);
+
+
 }

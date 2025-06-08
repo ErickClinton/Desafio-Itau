@@ -26,6 +26,16 @@ public class TradeController : ControllerBase
         return Created(string.Empty, new { message = "Buy trade successfully recorded." });
     }
     
+    [HttpGet("average-price-by-asset/{asset}")]
+    public async Task<IActionResult> GetAveragePriceByAsset(string asset)
+    {
+        _logger.LogInformation($"Start method GetAveragePriceByAsset - Request - {asset}");
+
+        var result = await _tradeService.CalculateAveragePrice(asset);
+
+        return Ok(result);
+    }
+    
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetTotalBrokerageFee(long userId)
     {

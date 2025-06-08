@@ -11,5 +11,6 @@ public interface ITradeService
     Task CreateTrade(CreateTradeRequestDto request);
     Task<decimal> GetTotalBrokerageAsync();
     Task<List<TopBrokerageDto>> GetTopUserBrokeragesAsync(int top);
-    
+    Task<decimal> CalculateAveragePrice(string assetCode);
+
 }

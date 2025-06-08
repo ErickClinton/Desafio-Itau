@@ -58,7 +58,6 @@ public class TradeRepository : ITradeRepository
     
     public async Task<List<TopBrokerageDto>> GetTopUserBrokeragesAsync(int top)
     {
-        // Primeiro, calcula os top usuários com maior corretagem somada
         var topUserIds = await _context.Trades
             .GroupBy(t => t.UserId)
             .Select(g => new
@@ -84,5 +83,12 @@ public class TradeRepository : ITradeRepository
             .Take(10)
             .ToListAsync();
         return result;
+    }
+    
+    public async Task<List<TradeEntity>> GetBuyTradesByAssetAsync(string assetCode)
+    {
+        return await _context.Trades
+            .Where(t => t.Type == TradeTypeEnum.Buy && t.AssetCode == assetCode)
+            .ToListAsync();
     }
 }

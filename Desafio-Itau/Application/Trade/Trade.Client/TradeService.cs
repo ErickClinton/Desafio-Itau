@@ -1,3 +1,4 @@
+using DesafioInvestimentosItau.Application.Exceptions;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Quote.Quote.Contract.Interfaces;
@@ -81,6 +82,33 @@ public class TradeService : ITradeService
         _logger.LogInformation($"Start service GetTopUserBrokeragesAsync");
         var response = await _tradeRepository.GetTopUserBrokeragesAsync(top);
         _logger.LogInformation($"End service GetTopUserBrokeragesAsync - Response - {response}");
+        return response;
+    }
+    
+    public async Task<decimal> CalculateAveragePrice(string assetCode)
+    {
+        _logger.LogInformation($"Start service CalculateAveragePrice - Request - {assetCode}");
+        var trades = await _tradeRepository.GetBuyTradesByAssetAsync(assetCode);
+        if (trades == null || !trades.Any())
+            throw new NoTradesFoundException(assetCode);
+
+        decimal totalValue = 0;
+        int totalQuantity = 0;
+
+        foreach (var trade in trades)
+        {
+            if (trade.Quantity <= 0 || trade.UnitPrice <= 0)
+                throw new InvalidTradeDataException("Invalid trade data detected.");
+
+            totalValue += trade.UnitPrice * trade.Quantity;
+            totalQuantity += trade.Quantity;
+        }
+
+        if (totalQuantity == 0)
+            throw new EmptyTradeQuantityException(assetCode);
+
+        var response = totalValue / totalQuantity;
+        _logger.LogInformation($"Start service CalculateAveragePrice - Response - {response}");
         return response;
     }
 }
