@@ -11,6 +11,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
+    <PackageReference Include="Polly" Version="8.5.2" />
+    <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0-preview.3.efcore.9.0.0" />
   </ItemGroup>
 
@@ -24,6 +26,10 @@
 
   <ItemGroup>
     <None Remove="Data\Migrations\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Messaging\Quotation\DTOs\" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -5,6 +5,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Kafka\Kafka.Contract\" />
     <Folder Include="User\User.Contracts\" />
   </ItemGroup>
 
