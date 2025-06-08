@@ -1,4 +1,4 @@
-namespace DesafioInvestimentosItau.Application.User.User.Client.DTOs;
+namespace DesafioInvestimentosItau.Application.Asset.Asset.Contract.Dtos;
 
 public class AssetPositionDto
 {
