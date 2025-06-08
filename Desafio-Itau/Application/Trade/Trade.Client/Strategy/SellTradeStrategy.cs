@@ -22,7 +22,7 @@ public class SellTradeStrategy : ITradeStrategy
         IQuoteService quoteService,
         ITradeRepository tradeRepository,
         IPositionService positionService,
-        ILogger<BuyTradeStrategy> logger)
+        ILogger<SellTradeStrategy> logger)
     {
         _userService = userService;
         _quoteService = quoteService;
