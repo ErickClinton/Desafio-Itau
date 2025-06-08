@@ -1,4 +1,4 @@
-namespace DesafioInvestimentosItau.Infrastructure.Messaging.Interface;
+namespace DesafioInvestimentosItau.Application.Kafka.Kafka.Contract.Interfaces;
 
 public interface IKafkaConsumer
 {
