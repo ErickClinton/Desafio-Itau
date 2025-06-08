@@ -11,6 +11,7 @@ using DesafioInvestimentosItau.Application.Quote.Quote.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Quote.Quote.Contract.Quote.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Kafka.Kafka.Contract.Interfaces;
 
+namespace DesafioInvestimentosItau.Tests;
 
 public class QuoteServiceTests
 {
