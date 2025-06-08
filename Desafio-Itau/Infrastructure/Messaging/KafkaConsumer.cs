@@ -1,5 +1,5 @@
 using Confluent.Kafka;
-using DesafioInvestimentosItau.Infrastructure.Messaging.Interface;
+using DesafioInvestimentosItau.Application.Kafka.Kafka.Contract.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace DesafioInvestimentosItau.Infrastructure.Messaging;
@@ -29,18 +29,20 @@ public class KafkaConsumer : IKafkaConsumer, IDisposable
         _logger.LogInformation("Subscribed to topic {Topic}", topic);
     }
 
-    public Task<string> ConsumeAsync(CancellationToken cancellationToken)
+    public Task<string?> ConsumeAsync(CancellationToken cancellationToken)
     {
-        try
+        return Task.Run(() =>
         {
-            var result = _consumer.Consume(cancellationToken);
-            return Task.FromResult(result.Message.Value);
-        }
-        catch (ConsumeException ex)
-        {
-            _logger.LogError(ex, "Kafka consume error");
-            throw;
-        }
+            try
+            {
+                var result = _consumer.Consume(cancellationToken);
+                return result?.Message?.Value;
+            }
+            catch (OperationCanceledException)
+            {
+                return null;
+            }
+        }, cancellationToken);
     }
 
     public void Dispose()
