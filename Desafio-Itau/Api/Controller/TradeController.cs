@@ -36,4 +36,11 @@ public class TradeController : ControllerBase
 
         return Ok(result);
     }
+    
+    [HttpGet("brokerage/total")]
+    public async Task<IActionResult> GetTotalBrokerage()
+    {
+        var total = await _tradeService.GetTotalBrokerageAsync();
+        return Ok(new { TotalBrokerage = total });
+    }
 }
