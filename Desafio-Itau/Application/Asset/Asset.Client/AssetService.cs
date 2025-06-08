@@ -1,11 +1,10 @@
+using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Dtos;
 using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Interfaces;
-using DesafioInvestimentosItau.Application.User.User.Client;
-using DesafioInvestimentosItau.Application.User.User.Client.DTOs;
 using DesafioInvestimentosItau.Domain.Entities;
 
 namespace DesafioInvestimentosItau.Application.Asset.Asset.Client;
 
-public class AssetService
+public class AssetService: IAssetService
 {
     private IAssetRepository _assetRepository;
     
@@ -21,7 +20,7 @@ public class AssetService
 
     public async Task<AssetEntity> CreateAsync(CreateAssetDto createAssetDto)
     {
-        var assetEntity = new AssetEntity() { Code = createAssetDto.Code, Name = createAssetDto.Name };
+        var assetEntity = new AssetEntity() { Code = createAssetDto.Code };
         return await _assetRepository.CreateAsync(assetEntity);
     }
 }
