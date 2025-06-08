@@ -30,7 +30,6 @@ public class QuoteRepository: IQuoteRepository
     public async Task<QuoteEntity?> GetLatestByAssetCodeAsync(string assetCode)
     {
         var latestQuote = await _context.Quotes
-            .Include(q => q.AssetCode)
             .Where(q => q.AssetCode == assetCode)
             .OrderByDescending(q => q.Timestamp)
             .FirstOrDefaultAsync();
