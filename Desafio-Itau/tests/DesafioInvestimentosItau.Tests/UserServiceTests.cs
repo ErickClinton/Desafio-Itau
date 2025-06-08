@@ -28,7 +28,6 @@ public class UserServiceTests
         {
             Name = "Test User",
             Email = "test@example.com",
-            BrokerageFee = 5.5m
         };
 
         _userRepositoryMock.Setup(r => r.ExistsAsync(dto.Email)).ReturnsAsync(false);
@@ -46,7 +45,6 @@ public class UserServiceTests
         result.Id.Should().Be(1);
         result.Email.Should().Be(dto.Email);
         result.Name.Should().Be(dto.Name);
-        result.BrokerageFee.Should().Be(dto.BrokerageFee);
     }
 
     [Fact]
@@ -57,7 +55,6 @@ public class UserServiceTests
         {
             Name = "Existing User",
             Email = "exists@example.com",
-            BrokerageFee = 4.2m
         };
 
         _userRepositoryMock.Setup(r => r.ExistsAsync(dto.Email)).ReturnsAsync(true);

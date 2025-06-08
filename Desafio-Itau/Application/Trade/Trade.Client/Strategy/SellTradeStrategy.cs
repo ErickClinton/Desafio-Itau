@@ -62,7 +62,7 @@ public class SellTradeStrategy : ITradeStrategy
         
         var totalValue = position.ProfitLoss + profitLoss;
         
-        position.UpdatePosition(totalQtd, totalValue);
+        position.UpdatePositionSell(totalQtd, totalValue);
 
         await _positionService.UpdateAsync(position);
         

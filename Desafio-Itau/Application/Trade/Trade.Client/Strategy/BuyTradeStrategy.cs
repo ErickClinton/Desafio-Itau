@@ -56,7 +56,7 @@ public class BuyTradeStrategy : ITradeStrategy
 
         var position = await _positionService.GetByUserAndAssetAsync(user.Id, asset.AssetCode);
 
-        var positionTask = position is not null
+        _= position is not null
             ? UpdatePosition(position, dto, user.BrokerageFee)
             : CreatePosition(dto, user, asset.AssetCode);
         _logger.LogInformation($"End service BuyTradeStrategy");

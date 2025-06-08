@@ -28,7 +28,7 @@ public class UserService : IUserService
         {
             Name = dto.Name,
             Email = dto.Email,
-            BrokerageFee = dto.BrokerageFee
+            BrokerageFee = 5
         };
 
         user = await _userRepository.CreateAsync(user);

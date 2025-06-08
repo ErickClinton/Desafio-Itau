@@ -23,4 +23,10 @@ public class PositionEntity
         Quantity = totalQuantity;
         AveragePrice = totalValue;
     }
+    
+    public void UpdatePositionSell(int totalQuantity, decimal profitLoss)
+    {
+        Quantity = totalQuantity;
+        ProfitLoss += profitLoss;
+    }
 }

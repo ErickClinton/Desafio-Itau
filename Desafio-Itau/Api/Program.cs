@@ -85,7 +85,20 @@ builder.Services.AddSingleton<IKafkaProducer, KafkaProducer>();
 builder.Services.AddHostedService<KafkaAssetWorker>();
 builder.Services.AddSingleton<IKafkaConsumerFactory, KafkaConsumerFactory>();
 
+//cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+            .AllowAnyOrigin()      
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
+app.UseCors("AllowAll");
 
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging() || app.Environment.IsProduction())
 {

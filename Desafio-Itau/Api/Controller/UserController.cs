@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DesafioInvestimentosItau.Api.Controller;
 
 [ApiController]
-[Route("users")]
+[Route("api/users")]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;

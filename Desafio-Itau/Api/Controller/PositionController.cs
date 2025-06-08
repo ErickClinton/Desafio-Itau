@@ -34,6 +34,15 @@ public class PositionController : ControllerBase
         var allPositions = await _positionService.GetUserPositionsAsync(userId);
         return Ok(allPositions);
     }
+    
+    [HttpGet("user/{userId}/global-position")]
+    public async Task<ActionResult<List<GlobalPositionDto>>> GetGlobalPosition(long userId)
+    {
+        _logger.LogInformation($"Start method GetAllPositionsByUserAsync - Request - {userId}");
+
+        var allPositions = await _positionService.GetGlobalPositionAsync(userId);
+        return Ok(allPositions);
+    }
 
     [HttpPost("find-position")]
     public async Task<ActionResult<PositionEntity?>> GetByUserAndAssetAsync(GetByUserAndAssetDto getByUserAndAssetDto)

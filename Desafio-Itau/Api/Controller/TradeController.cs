@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DesafioInvestimentosItau.Api.Controller;
 
 [ApiController]
-[Route("trades")]
+[Route("api/trades")]
 public class TradeController : ControllerBase
 {
     private readonly ITradeService _tradeService;
