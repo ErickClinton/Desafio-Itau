@@ -1,4 +1,4 @@
-namespace DesafioInvestimentosItau.Application.Quote.Quote.Contract.Quote.Contract.DTOs;
+namespace DesafioInvestimentosItau.Application.Quote.Quote.Contract.DTOs;
 
 public class CreateQuoteDto
 {
