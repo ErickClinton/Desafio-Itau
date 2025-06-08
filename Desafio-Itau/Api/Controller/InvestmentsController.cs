@@ -1,5 +1,5 @@
-using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Dtos;
 using DesafioInvestimentosItau.Application.Investment.Investment.Contract.Interfaces;
+using DesafioInvestimentosItau.Application.Position.Position.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Trade.Trade.Contract.DTOs;
 using Microsoft.AspNetCore.Mvc;
 

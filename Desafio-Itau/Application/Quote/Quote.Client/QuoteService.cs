@@ -55,7 +55,7 @@ public class QuoteService : IQuoteService
                 _logger.LogWarning("Returning latest quote from database for asset {AssetCode}", assetCode);
                 var quote = new QuotationMessageDto()
                 {
-                    AssetCode = latestQuote.Asset.Code,
+                    AssetCode = latestQuote.AssetCode,
                     UnitPrice = latestQuote.UnitPrice,
                     Timestamp = latestQuote.Timestamp
                 };
@@ -72,7 +72,7 @@ public async Task<QuoteEntity> CreateAsync(CreateQuoteDto createQuoteDto)
     {
         var quoteEntity = new QuoteEntity()
         {
-            AssetId =createQuoteDto.AssetId , 
+            AssetCode = createQuoteDto.AssetCode , 
             UnitPrice = createQuoteDto.UnitPrice,
             Timestamp = createQuoteDto.Timestamp
         };

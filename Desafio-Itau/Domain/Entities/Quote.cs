@@ -8,9 +8,8 @@ public class QuoteEntity
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
-    public long AssetId { get; set; }
+    public string AssetCode { get; set; }
     public decimal UnitPrice { get; set; }
     public DateTime Timestamp { get; set; }
 
-    public AssetEntity? Asset { get; set; }
 }

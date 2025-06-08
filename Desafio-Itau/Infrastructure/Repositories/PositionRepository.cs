@@ -21,11 +21,10 @@ public class PositionRepository : IPositionRepository
         return position;
     }
     
-    public async Task<PositionEntity?> GetByUserAndAssetAsync(long userId, long assetId)
+    public async Task<PositionEntity?> GetByUserAndAssetAsync(long userId, string assetCode)
     {
         return await _context.Positions
-            .Include(p => p.Asset)
-            .FirstOrDefaultAsync(p => p.UserId == userId && p.AssetId == assetId);
+            .FirstOrDefaultAsync(p => p.UserId == userId && p.AssetCode == assetCode);
     }
     
     public async Task UpdateAsync(PositionEntity position)
@@ -37,7 +36,6 @@ public class PositionRepository : IPositionRepository
     public async Task<IEnumerable<PositionEntity>> GetUserPositionsAsync(long userId)
     {
         return await _context.Positions
-            .Include(p => p.Asset)
             .Where(p => p.UserId == userId)
             .ToListAsync();
     }
@@ -55,8 +53,7 @@ public class PositionRepository : IPositionRepository
     public async Task<PositionEntity?> GetAveragePriceAsync(long userId, string assetCode)
     {
         return await _context.Positions
-            .Include(p => p.Asset)
-            .Where(p => p.UserId == userId && p.Asset.Code == assetCode)
+            .Where(p => p.UserId == userId && p.AssetCode == assetCode)
             .FirstOrDefaultAsync();
     }
 }

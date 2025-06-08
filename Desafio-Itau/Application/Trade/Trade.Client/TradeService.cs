@@ -1,5 +1,3 @@
-using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Interfaces;
-using DesafioInvestimentosItau.Application.Position.Position.Contract;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Quote.Quote.Contract.Interfaces;
@@ -17,15 +15,13 @@ public class TradeService : ITradeService
     private readonly ITradeRepository _tradeRepository;
     private readonly IUserService _userService;
     private readonly IPositionService _positionService;
-    private readonly IAssetService _assetService;
     private readonly ILogger<TradeService> _logger;
     private readonly IQuoteService _quoteService;
 
     public TradeService(ITradeRepository tradeRepository,ILogger<TradeService> logger, 
-        IUserService userService, IAssetService assetService, IPositionService positionService,IQuoteService quoteService)
+        IUserService userService, IPositionService positionService,IQuoteService quoteService)
     {
         _tradeRepository = tradeRepository;
-        _assetService = assetService;
         _userService = userService;
         _logger = logger;
         _positionService = positionService;
@@ -39,7 +35,7 @@ public class TradeService : ITradeService
         var trades = await _tradeRepository.GetGroupedBuyTradesByUserAsync(userId);
 
         var grouped = trades
-            .GroupBy(t => t.Asset.Code)
+            .GroupBy(t => t.AssetCode)
             .Select(g => new GroupedTradesByAssetDto
             {
                 AssetCode = g.Key,
@@ -55,25 +51,25 @@ public class TradeService : ITradeService
     {
         _logger.LogInformation("Start GetGroupedBuyTradesByUserAsync - Request -  {CreateTradeRequest}", createTradeRequestDto);
         var user = await _userService.GetByIdAsync(createTradeRequestDto.UserId) ?? throw new Exception($"User {createTradeRequestDto.UserId} not found");
-        //ajustar para caso nao exista no bd, ir na b3, buscar e publicar na fila :)
-        var asset = await _assetService.GetByAssetCode(createTradeRequestDto.AssetCode);
+        var asset = await _quoteService.SearchQuote(createTradeRequestDto.AssetCode) ??
+                    throw new Exception($"AssetCode {createTradeRequestDto.AssetCode} not found");
 
         var trade = new TradeEntity(
             user.Id,
-            asset.Id,
+            createTradeRequestDto.AssetCode,
             createTradeRequestDto.Quantity,
-            createTradeRequestDto.UnitPrice,
+            asset.UnitPrice,
             user.BrokerageFee,
             TradeTypeEnum.Buy
         );
 
         await _tradeRepository.CreateAsync(trade);
         
-        var position = await _positionService.GetByUserAndAssetAsync(user.Id, asset.Id);
+        var position = await _positionService.GetByUserAndAssetAsync(user.Id, asset.AssetCode);
 
         var positionTask = position is not null
             ? UpdatePosition(position, createTradeRequestDto, user.BrokerageFee)
-            : CreatePosition(createTradeRequestDto, user, asset.Id);
+            : CreatePosition(createTradeRequestDto, user, asset.AssetCode);
         
         await positionTask;
 
@@ -92,14 +88,14 @@ public class TradeService : ITradeService
         return total;
     }
 
-    private async Task CreatePosition(CreateTradeRequestDto createTradeRequestDto, UserEntity user,long assetId)
+    private async Task CreatePosition(CreateTradeRequestDto createTradeRequestDto, UserEntity user,string assetCode)
     {
         var avgPrice = (createTradeRequestDto.UnitPrice * createTradeRequestDto.Quantity + user.BrokerageFee) / createTradeRequestDto.Quantity;
 
         var newPosition = new PositionCreateDto()
         {
             UserId = user.Id,
-            AssetId = assetId,
+            AssetCode = assetCode,
             Quantity = createTradeRequestDto.Quantity,
             AveragePrice = avgPrice,
             ProfitLoss = 0

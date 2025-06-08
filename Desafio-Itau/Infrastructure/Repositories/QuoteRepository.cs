@@ -17,7 +17,7 @@ public class QuoteRepository: IQuoteRepository
     public async Task<bool> ExistsAsync(string assetCode, DateTime timestamp)
     {
         return await _context.Quotes
-            .AnyAsync(q => q.Asset.Code == assetCode && q.Timestamp == timestamp);
+            .AnyAsync(q => q.AssetCode == assetCode && q.Timestamp == timestamp);
     }
     
     public async Task<QuoteEntity> CreateAsync(QuoteEntity quote)
@@ -30,8 +30,8 @@ public class QuoteRepository: IQuoteRepository
     public async Task<QuoteEntity?> GetLatestByAssetCodeAsync(string assetCode)
     {
         var latestQuote = await _context.Quotes
-            .Include(q => q.Asset)
-            .Where(q => q.Asset.Code == assetCode)
+            .Include(q => q.AssetCode)
+            .Where(q => q.AssetCode == assetCode)
             .OrderByDescending(q => q.Timestamp)
             .FirstOrDefaultAsync();
 

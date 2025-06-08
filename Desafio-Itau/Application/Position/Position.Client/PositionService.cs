@@ -1,4 +1,3 @@
-using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Dtos;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.Interfaces;
 using DesafioInvestimentosItau.Domain.Entities;
@@ -21,11 +20,11 @@ public class PositionService : IPositionService
     
     public async Task<PositionEntity> CreateAsync(PositionCreateDto position)
     {
-        _logger.LogInformation("Creating position for AssetId: {AssetId}, UserId: {UserId}", position.AssetId, position.UserId);
+        _logger.LogInformation("Creating position for AssetId: {AssetId}, UserId: {UserId}", position.AssetCode, position.UserId);
         var newPosition = new PositionEntity()
         {
             UserId = position.UserId,
-            AssetId = position.AssetId,
+            AssetCode = position.AssetCode,
             Quantity = position.Quantity,
             AveragePrice = position.AveragePrice,
             ProfitLoss = 0
@@ -48,9 +47,9 @@ public class PositionService : IPositionService
         _logger.LogInformation("Position updated successfully.");
     }
     
-    public async Task<PositionEntity?> GetByUserAndAssetAsync(long userId, long assetId)
+    public async Task<PositionEntity?> GetByUserAndAssetAsync(long userId, string assetCode)
     {
-        return await _positionRepository.GetByUserAndAssetAsync(userId, assetId);
+        return await _positionRepository.GetByUserAndAssetAsync(userId, assetCode);
     }
 
     public async Task<List<AssetPositionDto>> GetUserPositionsAsync(long userId)
@@ -65,7 +64,7 @@ public class PositionService : IPositionService
 
         var result = positions.Select(p => new AssetPositionDto
         {
-            AssetCode = p.Asset.Code,
+            AssetCode = p.AssetCode,
             Quantity = p.Quantity,
             AveragePrice = p.AveragePrice,
             ProfitLoss = p.ProfitLoss

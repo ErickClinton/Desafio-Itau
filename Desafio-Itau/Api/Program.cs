@@ -1,5 +1,3 @@
-using DesafioInvestimentosItau.Application.Asset.Asset.Client;
-using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Investment.Investment.Client;
 using DesafioInvestimentosItau.Application.Investment.Investment.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Kafka.Kafka.Contract.Interfaces;
@@ -31,7 +29,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 );
 
 // Services
-builder.Services.AddScoped<IAssetService, AssetService>();
 builder.Services.AddScoped<IQuoteService, QuoteService>();
 builder.Services.AddScoped<IPositionService, PositionService>();
 builder.Services.AddScoped<ITradeService, TradeService>();
@@ -47,7 +44,6 @@ builder.Services.AddHttpClient<IQuoteInternalService, QuoteInternalService>(clie
     .AddPolicyHandler(HttpPolicies.GetFallbackPolicy());
 
 // Repositories
-builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 builder.Services.AddScoped<IQuoteRepository, QuoteRepository>();
 builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 builder.Services.AddScoped<ITradeRepository, TradeRepository>();
