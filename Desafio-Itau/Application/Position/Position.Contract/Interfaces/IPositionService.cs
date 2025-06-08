@@ -1,4 +1,3 @@
-using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Dtos;
 using DesafioInvestimentosItau.Application.Position.Position.Contract.DTOs;
 using DesafioInvestimentosItau.Domain.Entities;
 
@@ -11,7 +10,7 @@ public interface IPositionService
     Task<PositionEntity> CreateAsync(PositionCreateDto position);
     Task UpdateAsync(PositionEntity position);
     
-    Task<PositionEntity?> GetByUserAndAssetAsync(long userId, long assetId);
+    Task<PositionEntity?> GetByUserAndAssetAsync(long userId, string assetCode);
     Task<AveragePriceResponse> GetAveragePriceAsync(AveragePriceRequest request);
 
 }

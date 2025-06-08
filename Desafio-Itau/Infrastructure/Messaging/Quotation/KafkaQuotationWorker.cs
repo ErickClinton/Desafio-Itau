@@ -1,6 +1,4 @@
 using System.Text.Json;
-using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Dtos;
-using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Kafka.Kafka.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Quote.Quote.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Quote.Quote.Contract.Interfaces;
@@ -65,7 +63,6 @@ public class KafkaQuotationWorker : BackgroundService
     private async Task ProcessMessageAsync(QuotationMessageDto message)
     {
         using var scope = _scopeFactory.CreateScope();
-        var assetService = scope.ServiceProvider.GetRequiredService<IAssetService>();
         var quoteService = scope.ServiceProvider.GetRequiredService<IQuoteService>();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
@@ -74,29 +71,15 @@ public class KafkaQuotationWorker : BackgroundService
         try
         {
             _logger.LogInformation("Processing new quotation message for AssetCode: {AssetCode}, Timestamp: {Timestamp}", message.AssetCode, message.Timestamp);
-
-            var asset = await assetService.GetByAssetCode(message.AssetCode);
-            if (asset == null)
-            {
-                _logger.LogInformation("Asset not found. Creating new asset: {AssetCode}", message.AssetCode);
-
-                var createAsset = new CreateAssetDto
-                {
-                    Code = message.AssetCode
-                };
-
-                asset = await assetService.CreateAsync(createAsset);
-                _logger.LogInformation("Asset created with ID: {AssetId}", asset.Id);
-            }
-
+            
             var exists = await quoteService.ExistsAsync(message.AssetCode, message.Timestamp);
             if (!exists)
             {
-                _logger.LogInformation("Quotation not found. Creating for Asset ID: {AssetId}", asset.Id);
+                _logger.LogInformation("Quotation not found. Creating for Asset ID: {AssetId}", message.AssetCode);
 
                 var createQuotation = new CreateQuoteDto()
                 {
-                    AssetId = asset.Id,
+                    AssetCode = message.AssetCode,
                     Timestamp = message.Timestamp,
                     UnitPrice = message.UnitPrice
                 };
