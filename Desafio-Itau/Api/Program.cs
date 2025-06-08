@@ -6,6 +6,8 @@ using DesafioInvestimentosItau.Application.Position.Position.Contract.Interfaces
 using DesafioInvestimentosItau.Application.Quote.Quote.Client;
 using DesafioInvestimentosItau.Application.Quote.Quote.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Trade.Trade.Client;
+using DesafioInvestimentosItau.Application.Trade.Trade.Client.Strategy;
+using DesafioInvestimentosItau.Application.Trade.Trade.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.User.User.Client;
 using DesafioInvestimentosItau.Application.User.User.Contracts.Interfaces;
 using DesafioInvestimentosItau.Infrastructure.Data;
@@ -33,6 +35,14 @@ builder.Services.AddScoped<IQuoteService, QuoteService>();
 builder.Services.AddScoped<IPositionService, PositionService>();
 builder.Services.AddScoped<ITradeService, TradeService>();
 builder.Services.AddScoped<IUserService, UserService>();
+
+
+//Factory
+builder.Services.AddScoped<ITradeFactory, TradeFactory>();
+
+//Strategy
+builder.Services.AddScoped<BuyTradeStrategy>();
+builder.Services.AddScoped<SellTradeStrategy>();
 
 // Internal
 
