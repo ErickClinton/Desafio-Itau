@@ -1,4 +1,5 @@
 using DesafioInvestimentosItau.Api.Middleware;
+using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Investment.Investment.Client;
 using DesafioInvestimentosItau.Application.Investment.Investment.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Kafka.Kafka.Contract.Interfaces;
@@ -15,6 +16,8 @@ using DesafioInvestimentosItau.Infrastructure.Data;
 using DesafioInvestimentosItau.Infrastructure.Helpers.Converters;
 using DesafioInvestimentosItau.Infrastructure.Http;
 using DesafioInvestimentosItau.Infrastructure.Messaging;
+using DesafioInvestimentosItau.Infrastructure.Messaging.Asset;
+using DesafioInvestimentosItau.Infrastructure.Messaging.Factory;
 using DesafioInvestimentosItau.Infrastructure.Messaging.Quotation;
 using DesafioInvestimentosItau.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -31,13 +34,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     )
 );
+var kafkaBootstrap = builder.Configuration.GetSection("Kafka")["BootstrapServers"];
+
+await KafkaTopicInitializer.EnsureTopicsExistAsync(
+    new[] { "quotation-topic", "asset-topic" },
+    kafkaBootstrap!
+);
+
 
 // Services
 builder.Services.AddScoped<IQuoteService, QuoteService>();
 builder.Services.AddScoped<IPositionService, PositionService>();
 builder.Services.AddScoped<ITradeService, TradeService>();
 builder.Services.AddScoped<IUserService, UserService>();
-
+builder.Services.AddScoped<IAssetService, AssetService>();
+builder.Services.AddScoped<IInvestmentService, InvestmentService>();
 
 //Factory
 builder.Services.AddScoped<ITradeFactory, TradeFactory>();
@@ -66,13 +77,13 @@ builder.Services.AddScoped<IQuoteRepository, QuoteRepository>();
 builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 builder.Services.AddScoped<ITradeRepository, TradeRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IInvestmentService, InvestmentService>();
+builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 
 // Kafka
-builder.Services.AddSingleton<IKafkaConsumer, KafkaConsumer>();
 builder.Services.AddHostedService<KafkaQuotationWorker>();
 builder.Services.AddSingleton<IKafkaProducer, KafkaProducer>();
-
+builder.Services.AddHostedService<KafkaAssetWorker>();
+builder.Services.AddSingleton<IKafkaConsumerFactory, KafkaConsumerFactory>();
 
 var app = builder.Build();
 
@@ -85,6 +96,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging() || app.Enviro
         c.RoutePrefix = string.Empty;
     });
 }
+
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthorization();
