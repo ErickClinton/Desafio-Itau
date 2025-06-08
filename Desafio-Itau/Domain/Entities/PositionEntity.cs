@@ -20,10 +20,7 @@ public class PositionEntity
     
     public void UpdatePosition(int totalQuantity, decimal totalValue)
     {
-        if (totalQuantity <= 0)
-            throw new ArgumentException("Total quantity must be greater than zero.");
-
         Quantity = totalQuantity;
-        AveragePrice = totalValue / totalQuantity;
+        AveragePrice = totalValue;
     }
 }
