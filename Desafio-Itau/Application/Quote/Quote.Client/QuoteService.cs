@@ -1,4 +1,5 @@
 using System.Text.Json;
+using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Exceptions;
 using DesafioInvestimentosItau.Application.Kafka.Kafka.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Quote.Quote.Contract.DTOs;
@@ -15,14 +16,16 @@ public class QuoteService : IQuoteService
     private IQuoteInternalService _quoteInternalService;
     private IKafkaProducer _kafkaProducer;
     private ILogger<QuoteService> _logger;
+    private IAssetService _assetService;
 
     public QuoteService(IQuoteRepository quoteRepository, IQuoteInternalService quoteInternalService,
-        IKafkaProducer kafkaProducer, ILogger<QuoteService> logger)
+        IKafkaProducer kafkaProducer, ILogger<QuoteService> logger, IAssetService assetService)
     {
         _quoteRepository = quoteRepository;
         _quoteInternalService = quoteInternalService;
         _kafkaProducer = kafkaProducer;
         _logger = logger;
+        _assetService = assetService;
     }
 
     public async Task<bool> ExistsAsync(string assetCode, DateTime timestamp)
@@ -32,20 +35,28 @@ public class QuoteService : IQuoteService
 
     public async Task<QuotationMessageDto> SearchQuote(string assetCode)
     {
-        _logger.LogInformation($"Start Service SearchQuote - Request - {assetCode}");
+        _logger.LogInformation("Start Service SearchQuote - Request - {AssetCode}", assetCode);
+
         try
         {
             var quote = await _quoteInternalService.GetQuotationByAssetCodeAsync(assetCode);
-            var messageDto = new QuotationMessageDto()
+
+            var messageDto = new QuotationMessageDto
             {
                 AssetCode = quote.ticker,
                 UnitPrice = quote.price,
                 Timestamp = quote.tradeTime
             };
+
             var jsonMessage = JsonSerializer.Serialize(messageDto);
 
-            await _kafkaProducer.PublishAsync("quotation-topic", jsonMessage);
-            _logger.LogInformation($"End Service SearchQuote - Response - {messageDto}");
+            _ = PublishToAllTopics(jsonMessage).ContinueWith(task =>
+            {
+                if (task.IsFaulted)
+                    _logger.LogError(task.Exception, "Error publishing to topics");
+            });
+
+            _logger.LogInformation("End Service SearchQuote - Response - {@MessageDto}", messageDto);
             return messageDto;
         }
         catch (Exception ex)
@@ -56,18 +67,39 @@ public class QuoteService : IQuoteService
             if (latestQuote != null)
             {
                 _logger.LogWarning("Returning latest quote from database for asset {AssetCode}", assetCode);
-                var quote = new QuotationMessageDto()
+
+                var fallbackQuote = new QuotationMessageDto
                 {
                     AssetCode = latestQuote.AssetCode,
                     UnitPrice = latestQuote.UnitPrice,
                     Timestamp = latestQuote.Timestamp
                 };
-                _logger.LogInformation($"End Service SearchQuote - Response - {quote}");
-                return quote;
+
+                _logger.LogInformation("End Service SearchQuote - Response (fallback) - {@FallbackQuote}", fallbackQuote);
+                return fallbackQuote;
             }
 
             _logger.LogError("No fallback quote available in database for asset {AssetCode}", assetCode);
-            throw new FallBackException($"Unable to fetch quote for asset code {assetCode} from API or fallback.");
+            throw new FallBackException($"Unable to fetch quote for asset code '{assetCode}' from API or fallback.");
+        }
+    }
+    
+    private async Task PublishToAllTopics(string jsonMessage)
+    {
+        var topics = new[] { "quotation-topic", "asset-topic" };
+
+        foreach (var topic in topics)
+        {
+            _logger.LogInformation("Try publish to {Topic}", topic);
+            try
+            {
+                await _kafkaProducer.PublishAsync(topic, jsonMessage);
+                _logger.LogInformation("Published to {Topic}", topic);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to publish to {Topic}", topic);
+            }
         }
     }
 
