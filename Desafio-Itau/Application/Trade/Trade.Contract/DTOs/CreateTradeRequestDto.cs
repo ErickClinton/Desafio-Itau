@@ -1,3 +1,5 @@
+using DesafioInvestimentosItau.Domain.Enums;
+
 namespace DesafioInvestimentosItau.Application.Trade.Trade.Contract.DTOs;
 
 public class CreateTradeRequestDto
@@ -6,4 +8,5 @@ public class CreateTradeRequestDto
     public string AssetCode { get; set; }
     public int Quantity { get; set; }
     public decimal UnitPrice { get; set; }
+    public TradeTypeEnum Modality { get; set; }
 }
