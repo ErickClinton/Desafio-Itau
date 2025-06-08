@@ -38,7 +38,6 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Id)
                 .HasColumnName("id");
             entity.Property(e => e.Code).IsRequired().HasMaxLength(10).HasColumnName("code");
-            entity.Property(e => e.Name).IsRequired().HasMaxLength(100).HasColumnName("name");
         });
 
         modelBuilder.Entity<TradeEntity>(entity =>
