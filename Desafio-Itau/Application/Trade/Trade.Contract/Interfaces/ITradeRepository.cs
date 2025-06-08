@@ -5,6 +5,7 @@ namespace DesafioInvestimentosItau.Application.User.User.Client;
 
 public interface ITradeRepository
 {
+    Task<TradeEntity> CreateAsync(TradeEntity trade);
     Task<decimal> GetTotalInvestedAsync(long userId);
     Task<decimal> GetTotalBrokerageFeeAsync(long userId);
     Task<List<TradeEntity>>GetGroupedBuyTradesByUserAsync(long userId);

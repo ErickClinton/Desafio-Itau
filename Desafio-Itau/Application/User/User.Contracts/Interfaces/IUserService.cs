@@ -1,9 +1,12 @@
 using DesafioInvestimentosItau.Application.User.User.Client.DTOs;
+using DesafioInvestimentosItau.Domain.Entities;
 
-namespace DesafioInvestimentosItau.Application.User.User.Client;
+namespace DesafioInvestimentosItau.Application.User.User.Contracts.Interfaces;
 
 public interface IUserService
 {
-    Task<UserResponseDto> CreateUserAsync(CreateUserRequestDto request);
-    Task<IEnumerable<UserResponseDto>> GetAllUsersAsync();
+    Task<UserResponseDto> CreateAsync(CreateUserRequestDto dto);
+    Task<UserEntity?> GetByIdAsync(long id);
+    Task<IEnumerable<UserResponseDto>> GetAllAsync();
+    Task<bool> ExistsAsync(string email);
 }

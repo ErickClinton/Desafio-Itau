@@ -1,7 +1,8 @@
+using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Dtos;
 using DesafioInvestimentosItau.Application.Investment.Investment.Contract.Interfaces;
+using DesafioInvestimentosItau.Application.Position.Position.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Trade.Trade.Contract.DTOs;
 using DesafioInvestimentosItau.Application.User.User.Client;
-using DesafioInvestimentosItau.Application.User.User.Client.DTOs;
 using DesafioInvestimentosItau.Domain.Entities;
 using Microsoft.Extensions.Logging;
 
@@ -10,16 +11,16 @@ namespace DesafioInvestimentosItau.Application.Investment.Investment.Client;
 public class InvestmentService : IInvestmentService
 {
     private readonly ITradeService _tradeService;
-    private readonly IPositionRepository _positionRepository;
+    private readonly IPositionService _positionService;
     private readonly ILogger<InvestmentService> _logger;
 
     public InvestmentService(
         ITradeService tradeRepository,
-        IPositionRepository positionRepository,
+        IPositionService positionService,
         ILogger<InvestmentService> logger)
     {
         _tradeService = tradeRepository;
-        _positionRepository = positionRepository;
+        _positionService = positionService;
         _logger = logger;
     }
 
@@ -45,30 +46,7 @@ public class InvestmentService : IInvestmentService
     }
 
 
-    public async Task<List<AveragePriceByAssetDto>> GetAveragePricePerAssetAsync(long userId)
-    {
-        _logger.LogInformation("Start GetAveragePricePerAssetAsync - Request - {UserId}", userId);
-        var grouped = await _tradeService.GetGroupedBuyTradesByUserAsync(userId);
-        var result = new List<AveragePriceByAssetDto>();
-
-        foreach (var assetGroup in grouped)
-        {
-            var totalQuantity = assetGroup.Trades.Sum(t => t.Quantity);
-            if (totalQuantity == 0) continue;
-
-            var totalValue = assetGroup.Trades.Sum(t => t.UnitPrice * t.Quantity);
-            var average = totalValue / totalQuantity;
-
-            result.Add(new AveragePriceByAssetDto
-            {
-                AssetCode = assetGroup.AssetCode,
-                AveragePrice = average
-            });
-        }
-
-        _logger.LogInformation("End GetAveragePricePerAssetAsync - Response - {Count} ativos", result.Count);
-        return result;
-    }
+    
     
     public async Task<AveragePriceByAssetDto> CalculateAveragePriceForUserAssetAsync(long userId, string assetCode)
     {
@@ -99,10 +77,11 @@ public class InvestmentService : IInvestmentService
 
     
 
+    // levar isso aqui para o position service e criar a controller
     public async Task<List<AssetPositionDto>> GetUserPositionsAsync(long userId)
     {
         _logger.LogInformation("Start GetUserPositionsAsync - Request - {UserId}", userId);
-        var positions = (await _positionRepository.GetUserPositionsAsync(userId)).ToList();
+        var positions = (await _positionService.GetUserPositionsAsync(userId)).ToList();
 
         if (!positions.Any())
         {
@@ -111,7 +90,7 @@ public class InvestmentService : IInvestmentService
 
         var result = positions.Select(p => new AssetPositionDto()
         {
-            AssetCode = p.Asset.Code,
+            AssetCode = p.AssetCode,
             Quantity = p.Quantity,
             AveragePrice = p.AveragePrice,
             ProfitLoss = p.ProfitLoss

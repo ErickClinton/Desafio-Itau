@@ -1,4 +1,4 @@
-using DesafioInvestimentosItau.Application.User.User.Client.DTOs;
+using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Dtos;
 using DesafioInvestimentosItau.Domain.Entities;
 
 namespace DesafioInvestimentosItau.Application.Asset.Asset.Contract.Interfaces;
