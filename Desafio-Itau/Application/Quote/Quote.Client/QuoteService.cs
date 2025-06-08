@@ -1,5 +1,6 @@
 using System.Text.Json;
 using DesafioInvestimentosItau.Application.Kafka.Kafka.Contract.Interfaces;
+using DesafioInvestimentosItau.Application.Quote.Quote.Contract.DTOs;
 using DesafioInvestimentosItau.Application.Quote.Quote.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Quote.Quote.Contract.Quote.Contract.DTOs;
 using DesafioInvestimentosItau.Domain.Entities;
