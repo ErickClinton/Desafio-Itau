@@ -29,7 +29,7 @@ public class KafkaQuotationWorker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _kafkaConsumer.Subscribe("quotation-topic");
-        _logger.LogInformation("KafkaQuotationWorker started.");
+        _logger.LogInformation($"Start Kafka - Request - {stoppingToken}");
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -44,6 +44,7 @@ public class KafkaQuotationWorker : BackgroundService
 
                 if (message != null)
                     await ProcessMessageAsync(message);
+                _logger.LogInformation($"End Kafka");
             }
             catch (OperationCanceledException)
             {
@@ -62,6 +63,7 @@ public class KafkaQuotationWorker : BackgroundService
 
     private async Task ProcessMessageAsync(QuotationMessageDto message)
     {
+        _logger.LogInformation($"Start Kafka ProcessMessageAsync- Request - {message}");
         using var scope = _scopeFactory.CreateScope();
         var quoteService = scope.ServiceProvider.GetRequiredService<IQuoteService>();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();

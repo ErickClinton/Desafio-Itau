@@ -31,6 +31,7 @@ public class QuoteService : IQuoteService
 
     public async Task<QuotationMessageDto> SearchQuote(string assetCode)
     {
+        _logger.LogInformation($"Start Service SearchQuote - Request - {assetCode}");
         try
         {
             var quote = await _quoteInternalService.GetQuotationByAssetCodeAsync(assetCode);
@@ -43,6 +44,7 @@ public class QuoteService : IQuoteService
             var jsonMessage = JsonSerializer.Serialize(messageDto);
 
             await _kafkaProducer.PublishAsync("quotation-topic", jsonMessage);
+            _logger.LogInformation($"End Service SearchQuote - Response - {messageDto}");
             return messageDto;
         }
         catch (Exception ex)
@@ -59,6 +61,7 @@ public class QuoteService : IQuoteService
                     UnitPrice = latestQuote.UnitPrice,
                     Timestamp = latestQuote.Timestamp
                 };
+                _logger.LogInformation($"End Service SearchQuote - Response - {quote}");
                 return quote;
             }
 
@@ -70,12 +73,16 @@ public class QuoteService : IQuoteService
 
 public async Task<QuoteEntity> CreateAsync(CreateQuoteDto createQuoteDto)
     {
+        _logger.LogInformation($"Start Service CreateAsync - Request - {createQuoteDto}");
         var quoteEntity = new QuoteEntity()
         {
             AssetCode = createQuoteDto.AssetCode , 
             UnitPrice = createQuoteDto.UnitPrice,
             Timestamp = createQuoteDto.Timestamp
         };
-        return await _quoteRepository.CreateAsync(quoteEntity);
+        
+        var response = await _quoteRepository.CreateAsync(quoteEntity);
+        _logger.LogInformation($"Start Service CreateAsync - Response - {response}");
+        return response;
     }
 }

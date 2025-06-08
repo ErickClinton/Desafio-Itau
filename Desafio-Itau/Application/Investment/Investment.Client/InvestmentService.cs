@@ -27,7 +27,7 @@ public class InvestmentService : IInvestmentService
 
     public async Task<List<TotalInvestedByAssetDto>> GetAllInvestmentsByUserIdAsync(long userId)
     {
-        _logger.LogInformation("Start GetAllInvestmentsByUserIdAsync - Request - {UserId}", userId);
+        _logger.LogInformation($"Start service GetAllInvestmentsByUserIdAsync - Request - {userId}");
         var investedAssets = await _tradeService.GetGroupedBuyTradesByUserAsync(userId);
         var result = new List<TotalInvestedByAssetDto>();
 
@@ -41,68 +41,13 @@ public class InvestmentService : IInvestmentService
                 TotalInvest = total
             });
         }
-
-        _logger.LogInformation("End GetAllInvestmentsByUserIdAsync - Response - {Count} ativos", result.Count);
-        return result;
-    }
-
-
-    
-    
-    public async Task<AveragePriceByAssetDto> CalculateAveragePriceForUserAssetAsync(long userId, string assetCode)
-    {
-        _logger.LogInformation("Start CalculateAveragePriceForUserAssetAsync - UserId: {UserId}, Asset: {AssetCode}", userId, assetCode);
-
-        var trades = await _tradeService.GetBuyTradesByUserAndAssetAsync(userId, assetCode);
-
-        if (trades == null || !trades.Any())
-            throw new ArgumentException("No buy trades found for the specified asset and user.");
-
-        var totalQuantity = trades.Sum(t => t.Quantity);
-        if (totalQuantity == 0)
-            throw new InvalidOperationException("Total quantity must be greater than zero.");
-
-        var totalValue = trades.Sum(t => t.UnitPrice * t.Quantity);
-        var averagePrice = totalValue / totalQuantity;
-        
-        var price = new AveragePriceByAssetDto
-        {
-            AssetCode = assetCode,
-            AveragePrice = averagePrice
-        };
-        
-        _logger.LogInformation("End CalculateAveragePriceForUserAssetAsync - {Price}", price);
-
-        return price;
-    }
-
-    
-
-    // levar isso aqui para o position service e criar a controller
-    public async Task<List<AssetPositionDto>> GetUserPositionsAsync(long userId)
-    {
-        _logger.LogInformation("Start GetUserPositionsAsync - Request - {UserId}", userId);
-        var positions = (await _positionService.GetUserPositionsAsync(userId)).ToList();
-
-        if (!positions.Any())
-        {
-            _logger.LogWarning("No positions found for user {UserId}", userId);
-        }
-
-        var result = positions.Select(p => new AssetPositionDto()
-        {
-            AssetCode = p.AssetCode,
-            Quantity = p.Quantity,
-            AveragePrice = p.AveragePrice,
-            ProfitLoss = p.ProfitLoss
-        }).ToList();
-
-        _logger.LogInformation("End GetUserPositionsAsync - Response - {Count} posições", result.Count);
+        _logger.LogInformation($"End service GetAllInvestmentsByUserIdAsync - Response - {result}");
         return result;
     }
     
     public async Task<TopInvestmentsResponseDto> GetTopUserStatsAsync(int top)
     {
+        _logger.LogInformation($"Start service GetTopUserStatsAsync - Request - {top}");
         var positions = await _positionService.GetTopUserPositionsAsync(top);
         var brokerages = await _tradeService.GetTopUserBrokeragesAsync(top);
 
@@ -133,12 +78,15 @@ public class InvestmentService : IInvestmentService
                 TotalBrokerage = b.TotalBrokerage
             });
         }
-
-        return new TopInvestmentsResponseDto
+        
+        var response = new TopInvestmentsResponseDto
         {
             TopByQuantity = topByQuantity,
             TopByBrokerage = topByBrokerage
         };
+        
+        _logger.LogInformation($"End service GetAllInvestmentsByUserIdAsync - Response - {response}");
+        return response;
     }
 
     private decimal CalculateTotalInvested(List<TradeEntity> trades)

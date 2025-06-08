@@ -18,6 +18,7 @@ public class QuoteInternalService:IQuoteInternalService
     }
     public async Task<B3QuotationResponseDto> GetQuotationByAssetCodeAsync(string assetName)
     {
+        _logger.LogInformation($"Start Internal GetQuotationByAssetCodeAsync - Request - {assetName}");
         var response = await _httpClient.GetAsync($"api/Assets/{assetName}");
 
         if (response.StatusCode == HttpStatusCode.NotFound)
@@ -29,6 +30,7 @@ public class QuoteInternalService:IQuoteInternalService
 
         if (data == null)
             throw new Exception("Resposta da API inválida.");
+        _logger.LogInformation($"End Internal GetQuotationByAssetCodeAsync - Response - {data}");
         return data;
     }
 }

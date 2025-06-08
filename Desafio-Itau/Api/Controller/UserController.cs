@@ -18,16 +18,17 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateUser([FromBody] CreateUserRequestDto dto)
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserRequestDto createUserRequestDto)
     {
+        _logger.LogInformation($"Start method CreateBuyTrade - Request - {createUserRequestDto}");
         try
         {
-            var user = await _userService.CreateAsync(dto);
+            var user = await _userService.CreateAsync(createUserRequestDto);
             return Ok(user);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create user with email: {Email}", dto.Email);
+            _logger.LogError(ex, "Failed to create user with email: {Email}", createUserRequestDto.Email);
             return BadRequest(new { error = ex.Message });
         }
     }

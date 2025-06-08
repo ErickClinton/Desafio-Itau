@@ -26,7 +26,7 @@ public class TradeService : ITradeService
 
     public async Task<List<GroupedTradesByAssetDto>> GetGroupedBuyTradesByUserAsync(long userId)
     {
-        _logger.LogInformation("Start GetGroupedBuyTradesByUserAsync - UserId: {UserId}", userId);
+        _logger.LogInformation($"Start service GetGroupedBuyTradesByUserAsync - Request - {userId}");
         
         var trades = await _tradeRepository.GetGroupedBuyTradesByUserAsync(userId);
 
@@ -39,38 +39,48 @@ public class TradeService : ITradeService
             })
             .ToList();
 
-        _logger.LogInformation("End GetGroupedBuyTradesByUserAsync - Found {Count} asset groups", grouped.Count);
+        _logger.LogInformation($"End service GetGroupedBuyTradesByUserAsync - Response - {grouped}");
         return grouped;
     }
 
     public async Task CreateTrade(CreateTradeRequestDto createTradeRequestDto)
     {
-        _logger.LogInformation("Start GetGroupedBuyTradesByUserAsync - Request -  {CreateTradeRequest}", createTradeRequestDto);
+        _logger.LogInformation($"Start service CreateTrade - Request -  {createTradeRequestDto}");
         var method = _tradeFactory.GetStrategy(createTradeRequestDto);
         await method.ExecuteAsync(createTradeRequestDto);
-
+        _logger.LogInformation($"End CreateTrade");
     }
 
     public async Task<List<TradeEntity>> GetBuyTradesByUserAndAssetAsync(long userId, string assetCode)
     {
-        return await _tradeRepository.GetBuyTradesByUserAndAssetAsync(userId, assetCode);
+        _logger.LogInformation($"Start service GetBuyTradesByUserAndAssetAsync - Request - {userId}");
+        var response = await _tradeRepository.GetBuyTradesByUserAndAssetAsync(userId, assetCode);
+        _logger.LogInformation($"Start service GetBuyTradesByUserAndAssetAsync - Request - {userId}");
+
+        return response;
     }
     
     public async Task<decimal> GetTotalBrokerageFeeAsync(long userId)
     {
-        _logger.LogInformation("Start method GetTotalBrokerageFeeAsync - Request - {UserId}", userId);
+        _logger.LogInformation($"Start service GetTotalBrokerageFeeAsync - Request - {userId}");
         var total = await _tradeRepository.GetTotalBrokerageFeeAsync(userId);
-        _logger.LogInformation("End method GetTotalBrokerageFeeAsync - Response - {Total}", total);
+        _logger.LogInformation($"End service GetTotalBrokerageFeeAsync - Response - {total}");
         return total;
     }
     
     public async Task<decimal> GetTotalBrokerageAsync()
     {
-        return await _tradeRepository.GetTotalBrokerageAsync();
+        _logger.LogInformation($"Start service GetTotalBrokerageFeeAsync");
+        var response = await _tradeRepository.GetTotalBrokerageAsync();
+        _logger.LogInformation($"End service GetTotalBrokerageFeeAsync - Response - {response}");
+        return response;
     }
 
     public async Task<List<TopBrokerageDto>> GetTopUserBrokeragesAsync(int top)
     {
-        return await _tradeRepository.GetTopUserBrokeragesAsync(top);
+        _logger.LogInformation($"Start service GetTopUserBrokeragesAsync");
+        var response = await _tradeRepository.GetTopUserBrokeragesAsync(top);
+        _logger.LogInformation($"End service GetTopUserBrokeragesAsync - Response - {response}");
+        return response;
     }
 }

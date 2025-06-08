@@ -10,30 +10,26 @@ namespace DesafioInvestimentosItau.Api.Controller;
 public class InvestmentsController : ControllerBase
 {
     private readonly IInvestmentService _investmentService;
-
-    public InvestmentsController(IInvestmentService investmentService)
+    private readonly ILogger<InvestmentsController> _logger;
+    public InvestmentsController(IInvestmentService investmentService, ILogger<InvestmentsController> logger)
     {
         _investmentService = investmentService;
+        _logger = logger;
     }
 
     [HttpGet("user/{userId}/total-invested")]
     public async Task<ActionResult<List<TotalInvestedByAssetDto>>> GetAllInvestmentsByUserId(long userId)
     {
+        _logger.LogInformation($"Start method GetAllInvestmentsByUserId - Request - {userId}");
         var result = await _investmentService.GetAllInvestmentsByUserIdAsync(userId);
-        return Ok(result);
-    }
-
-   
-    [HttpGet("user/{userId}/positions")]
-    public async Task<ActionResult<List<AssetPositionDto>>> GetUserPositions(long userId)
-    {
-        var result = await _investmentService.GetUserPositionsAsync(userId);
         return Ok(result);
     }
     
     [HttpGet("top/{top}")]
     public async Task<ActionResult<List<TotalInvestedByAssetDto>>> GetTopInvestments(int top)
     {
+        _logger.LogInformation($"Start method GetUserPositions - GetTopInvestments - {top}");
+
         var result = await _investmentService.GetTopUserStatsAsync(top);
         return Ok(result);
     }

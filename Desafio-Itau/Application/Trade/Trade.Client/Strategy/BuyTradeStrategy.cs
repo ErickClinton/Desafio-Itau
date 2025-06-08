@@ -34,7 +34,7 @@ public class BuyTradeStrategy : ITradeStrategy
 
     public async Task ExecuteAsync(CreateTradeRequestDto dto)
     {
-        _logger.LogInformation("Executing BuyTradeStrategy: {@dto}", dto);
+        _logger.LogInformation($"Start service BuyTradeStrategy - Request -  {dto}");
 
         var user = await _userService.GetByIdAsync(dto.UserId)
                    ?? throw new Exception($"User {dto.UserId} not found");
@@ -58,9 +58,12 @@ public class BuyTradeStrategy : ITradeStrategy
         var positionTask = position is not null
             ? UpdatePosition(position, dto, user.BrokerageFee)
             : CreatePosition(dto, user, asset.AssetCode);
+        _logger.LogInformation($"End service BuyTradeStrategy");
+
     }
     private async Task CreatePosition(CreateTradeRequestDto createTradeRequestDto, UserEntity user,string assetCode)
     {
+        _logger.LogInformation($"Start service CreatePosition - Request -  {createTradeRequestDto} - {user} - {assetCode}");
         var avgPrice = (createTradeRequestDto.UnitPrice * createTradeRequestDto.Quantity + user.BrokerageFee) / createTradeRequestDto.Quantity;
 
         var newPosition = new PositionCreateDto()
@@ -72,15 +75,18 @@ public class BuyTradeStrategy : ITradeStrategy
             ProfitLoss = 0
         };
         await _positionService.CreateAsync(newPosition);
+        _logger.LogInformation($"End service CreatePosition");
     }
 
     private async Task UpdatePosition(PositionEntity position,CreateTradeRequestDto createTradeRequestDto, decimal brokerageFee)
     {
+        _logger.LogInformation($"Start service UpdatePosition - Request -  {position} - {createTradeRequestDto} - {brokerageFee}");
         var totalQtd = position.Quantity + createTradeRequestDto.Quantity;
         var totalValue = (position.Quantity * position.AveragePrice) + (createTradeRequestDto.Quantity * createTradeRequestDto.UnitPrice + brokerageFee)/totalQtd;
         if (totalQtd <= 0)
             throw new ArgumentException("Total quantity must be greater than zero.");
         position.UpdatePosition(totalQtd, totalValue);
         await _positionService.UpdateAsync(position);
+        _logger.LogInformation($"End service UpdatePosition");
     }
 }

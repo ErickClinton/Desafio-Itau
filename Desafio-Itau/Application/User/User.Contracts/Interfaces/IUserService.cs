@@ -5,7 +5,7 @@ namespace DesafioInvestimentosItau.Application.User.User.Contracts.Interfaces;
 
 public interface IUserService
 {
-    Task<UserResponseDto> CreateAsync(CreateUserRequestDto dto);
+    Task<UserEntity> CreateAsync(CreateUserRequestDto dto);
     Task<UserEntity?> GetByIdAsync(long id);
     Task<IEnumerable<UserResponseDto>> GetAllAsync();
     Task<bool> ExistsAsync(string email);

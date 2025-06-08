@@ -17,9 +17,9 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public async Task<UserResponseDto> CreateAsync(CreateUserRequestDto dto)
+    public async Task<UserEntity> CreateAsync(CreateUserRequestDto dto)
     {
-        _logger.LogInformation("Creating user with email: {Email}", dto.Email);
+        _logger.LogInformation($"Start Service CreateAsync - Request - {dto}");
         var alreadyExists = await _userRepository.ExistsAsync(dto.Email);
         if(alreadyExists == true)
             throw new Exception($"Email {dto.Email} already exists");
@@ -33,39 +33,39 @@ public class UserService : IUserService
 
         user = await _userRepository.CreateAsync(user);
 
-        _logger.LogInformation("User created with ID: {UserId}", user.Id);
+        _logger.LogInformation($"End Service CreateAsync - Request - {user}");
 
-        return new UserResponseDto
-        {
-            Name = user.Name,
-            Email = user.Email,
-            BrokerageFee = user.BrokerageFee
-        };
+        return user;
     }
 
     public async Task<UserEntity?> GetByIdAsync(long id)
     {
-        _logger.LogInformation("Getting user by ID: {UserId}", id);
-        
-        return await _userRepository.GetByIdAsync(id);
+        _logger.LogInformation($"Start Service GetByIdAsync - Request - {id}");
+        var response = await _userRepository.GetByIdAsync(id);
+        _logger.LogInformation($"End Service GetByIdAsync - Response - {response}");
+        return response;
     }
 
     public async Task<IEnumerable<UserResponseDto>> GetAllAsync()
     {
-        _logger.LogInformation("Getting all users");
+        _logger.LogInformation($"Start Service GetAllAsync");
 
         var users = await _userRepository.GetAllAsync();
-
-        return users.Select(user => new UserResponseDto
+        var response = users.Select(user => new UserResponseDto
         {
             Name = user.Name,
             Email = user.Email,
             BrokerageFee = user.BrokerageFee
         }).ToList();
+        _logger.LogInformation($"End Service GetAllAsync - Response - {response}");
+        return response;
     }
 
     public async Task<bool> ExistsAsync(string email)
     {
-        return await _userRepository.ExistsAsync(email);
+        _logger.LogInformation($"Start Service ExistsAsync - Request - {email}");
+        var response = await _userRepository.ExistsAsync(email);
+        _logger.LogInformation($"End Service ExistsAsync - Response - {response}");
+        return response;
     }
 }

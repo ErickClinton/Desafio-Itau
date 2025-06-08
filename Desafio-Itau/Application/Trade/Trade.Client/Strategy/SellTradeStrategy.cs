@@ -32,7 +32,7 @@ public class SellTradeStrategy : ITradeStrategy
 
     public async Task ExecuteAsync(CreateTradeRequestDto createTradeRequestDto)
     {
-        _logger.LogInformation("Start CreateSellTrade - Request: {CreateTradeRequest}", createTradeRequestDto);
+        _logger.LogInformation($"Start service SellTradeStrategy - Request -  {createTradeRequestDto}");
 
         var user = await _userService.GetByIdAsync(createTradeRequestDto.UserId)
                    ?? throw new Exception($"User {createTradeRequestDto.UserId} not found");
@@ -64,5 +64,7 @@ public class SellTradeStrategy : ITradeStrategy
         position.UpdatePosition(totalQtd, totalValue);
 
         await _positionService.UpdateAsync(position);
+        
+        _logger.LogInformation($"End service SellTradeStrategy");
     }
 }

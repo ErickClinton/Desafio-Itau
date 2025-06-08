@@ -20,7 +20,7 @@ public class PositionService : IPositionService
     
     public async Task<PositionEntity> CreateAsync(PositionCreateDto position)
     {
-        _logger.LogInformation("Creating position for AssetId: {AssetId}, UserId: {UserId}", position.AssetCode, position.UserId);
+        _logger.LogInformation($"Start service CreateAsync - Request - {position}");
         var newPosition = new PositionEntity()
         {
             UserId = position.UserId,
@@ -29,32 +29,42 @@ public class PositionService : IPositionService
             AveragePrice = position.AveragePrice,
             ProfitLoss = 0
         };
-        return await _positionRepository.CreateAsync(newPosition);
+        var response = await _positionRepository.CreateAsync(newPosition);
+        _logger.LogInformation($"End service CreateAsync - Response - {response}");
+        return response;
     }
 
     public async Task<AveragePriceResponse> GetAveragePriceAsync(AveragePriceRequest averagePriceRequest)
     {
+        _logger.LogInformation($"Start service GetAveragePriceAsync - Request - {averagePriceRequest}");
+        
         var averagePrice = await _positionRepository.GetAveragePriceAsync(averagePriceRequest.UserId,averagePriceRequest.AssetCode);
         if(averagePrice == null) throw new ApplicationException("The average price was not found");
-        return new AveragePriceResponse()
+        
+        var response = new AveragePriceResponse()
             { AssetCode = averagePriceRequest.AssetCode, AveragePrice = averagePrice.AveragePrice };
+        _logger.LogInformation($"End service GetAveragePriceAsync - Response - {response}");
+        return response;
     }
     
     public async Task UpdateAsync(PositionEntity position)
     {
-        _logger.LogInformation("Updating position with ID {PositionId}", position.Id);
+        _logger.LogInformation($"Start service UpdateAsync - Request - {position}");
         await _positionRepository.UpdateAsync(position);
-        _logger.LogInformation("Position updated successfully.");
+        _logger.LogInformation($"End service UpdateAsync");
     }
     
     public async Task<PositionEntity?> GetByUserAndAssetAsync(long userId, string assetCode)
     {
-        return await _positionRepository.GetByUserAndAssetAsync(userId, assetCode);
+        _logger.LogInformation($"Start service GetByUserAndAssetAsync - Request - {userId}-{assetCode}");
+        var response = await _positionRepository.GetByUserAndAssetAsync(userId, assetCode);
+        _logger.LogInformation($"End service GetByUserAndAssetAsync - Response - {response}");
+        return response;
     }
 
     public async Task<List<AssetPositionDto>> GetUserPositionsAsync(long userId)
     {
-        _logger.LogInformation("Start GetUserPositionsAsync - Request - {UserId}", userId);
+        _logger.LogInformation($"Start service GetUserPositionsAsync - Request - {userId}");
         var positions = (await _positionRepository.GetUserPositionsAsync(userId)).ToList();
 
         if (!positions.Any())
@@ -70,14 +80,14 @@ public class PositionService : IPositionService
             ProfitLoss = p.ProfitLoss
         }).ToList();
 
-        _logger.LogInformation("End GetUserPositionsAsync - Response - {Result}", result);
+        _logger.LogInformation($"End service GetUserPositionsAsync - Response - {result}");
 
         return result;
     }
 
     public async Task<GlobalPositionDto> GetGlobalPositionAsync(long userId)
     {
-        _logger.LogInformation("Start GetGlobalPositionAsync - Request - {UserId}", userId);
+        _logger.LogInformation($"Start service GetGlobalPositionAsync - Request - {userId}");
         var pl = await _positionRepository.GetTotalProfitLossAsync(userId);
 
         var globalPosition = new GlobalPositionDto
@@ -86,13 +96,16 @@ public class PositionService : IPositionService
             TotalProfitLoss = pl
 
         };
-        _logger.LogInformation("End GetGlobalPositionAsync - Response - {GlobalPosition}", globalPosition);
+        _logger.LogInformation($"End service GetGlobalPositionAsync - Response - {globalPosition}");
 
         return globalPosition;
     }
 
     public async Task<List<TopPositionDto>> GetTopUserPositionsAsync(int top)
     {
-        return await _positionRepository.GetTopUserPositionsAsync(top);
+        _logger.LogInformation($"Start service GetGlobalPositionAsync - Request - {top}");
+        var response = await _positionRepository.GetTopUserPositionsAsync(top);
+        _logger.LogInformation($"End service GetGlobalPositionAsync - Response - {response}");
+        return response;
     }
 }

@@ -20,8 +20,7 @@ public class TradeController : ControllerBase
     [HttpPost("")]
     public async Task<IActionResult> CreateBuyTrade([FromBody] CreateTradeRequestDto request)
     {
-        _logger.LogInformation("Received request to trade for asset {AssetCode}", request.AssetCode);
-
+        _logger.LogInformation($"Start method CreateBuyTrade - Request - {request}");
         await _tradeService.CreateTrade(request);
 
         return Ok(new { message = "Trade de compra registrada com sucesso." });
@@ -30,7 +29,7 @@ public class TradeController : ControllerBase
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetTotalBrokerageFee(long userId)
     {
-        _logger.LogInformation("Received request to trade for asset {AssetCode}",userId);
+        _logger.LogInformation($"Start method GetTotalBrokerageFee - Request - {userId}");
 
         var result = await _tradeService.GetTotalBrokerageFeeAsync(userId);
 
@@ -40,6 +39,8 @@ public class TradeController : ControllerBase
     [HttpGet("brokerage/total")]
     public async Task<IActionResult> GetTotalBrokerage()
     {
+        _logger.LogInformation($"Start method GetTotalBrokerage");
+
         var total = await _tradeService.GetTotalBrokerageAsync();
         return Ok(new { TotalBrokerage = total });
     }

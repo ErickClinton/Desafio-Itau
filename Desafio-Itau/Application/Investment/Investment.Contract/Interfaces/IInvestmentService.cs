@@ -7,6 +7,5 @@ namespace DesafioInvestimentosItau.Application.Investment.Investment.Contract.In
 public interface IInvestmentService
 {
     Task<List<TotalInvestedByAssetDto>> GetAllInvestmentsByUserIdAsync(long userId);
-    Task<List<AssetPositionDto>> GetUserPositionsAsync(long userId);
     Task<TopInvestmentsResponseDto> GetTopUserStatsAsync(int top);
 }

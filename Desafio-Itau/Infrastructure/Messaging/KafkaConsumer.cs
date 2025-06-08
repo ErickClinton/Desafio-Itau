@@ -25,6 +25,7 @@ public class KafkaConsumer : IKafkaConsumer, IDisposable
 
     public void Subscribe(string topic)
     {
+        _logger.LogInformation("Start Subscribe to topic {Topic}", topic);
         _consumer.Subscribe(topic);
         _logger.LogInformation("Subscribed to topic {Topic}", topic);
     }

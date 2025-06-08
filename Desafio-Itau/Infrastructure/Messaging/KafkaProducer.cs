@@ -31,16 +31,15 @@ public class KafkaProducer : IKafkaProducer
     {
         try
         {
-            _logger.LogInformation("Enviando mensagem para Kafka no tópico {Topic}: {Message}", topic, message);
-        
+            _logger.LogInformation($"Start PublishAsync - Request - {topic} - {message}");        
             var result = await _producer.ProduceAsync(topic, new Message<Null, string> { Value = message });
         
             _producer.Flush(TimeSpan.FromSeconds(5));
-            _logger.LogInformation("Mensagem publicada com sucesso no Kafka: {Offset}", result.Offset);
+             _logger.LogInformation($"End PublishAsync - response - {topic} - {result.Offset}");      
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao publicar no Kafka: {Message}", ex.Message);
+            _logger.LogError(ex, "Error send to kafka: {Message}", ex.Message);
             throw;
         }
     }
