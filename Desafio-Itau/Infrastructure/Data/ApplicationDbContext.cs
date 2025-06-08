@@ -11,7 +11,6 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<UserEntity> Users => Set<UserEntity>();
-    public DbSet<AssetEntity> Assets => Set<AssetEntity>();
     public DbSet<TradeEntity> Trades => Set<TradeEntity>();
     public DbSet<QuoteEntity> Quotes => Set<QuoteEntity>();
     public DbSet<PositionEntity> Positions => Set<PositionEntity>();
@@ -31,15 +30,6 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.BrokerageFee).HasColumnType("decimal(5,2)").HasColumnName("brokerage_fee");
         });
 
-        modelBuilder.Entity<AssetEntity>(entity =>
-        {
-            entity.ToTable("asset");
-            entity.HasKey(e => e.Id);
-            entity.Property(e => e.Id)
-                .HasColumnName("id");
-            entity.Property(e => e.Code).IsRequired().HasMaxLength(10).HasColumnName("code");
-        });
-
         modelBuilder.Entity<TradeEntity>(entity =>
         {
             entity.ToTable("trade");
@@ -55,18 +45,13 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.UserId)
                 .HasColumnName("user_id");
             
-            entity.Property(e => e.AssetId)
-                .HasColumnName("asset_id");
+            entity.Property(e => e.AssetCode)
+                .HasColumnName("asset_code");
             
             entity.HasOne(e => e.User)
                   .WithMany(u => u.Trades)
                   .HasForeignKey(e => e.UserId)
                   .HasConstraintName("fk_trade_user_id");
-
-            entity.HasOne(e => e.Asset)
-                  .WithMany(a => a.Trades)
-                  .HasForeignKey(e => e.AssetId)
-                  .HasConstraintName("fk_trade_asset_id");
         });
 
         modelBuilder.Entity<QuoteEntity>(entity =>
@@ -78,13 +63,8 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.UnitPrice).HasColumnType("decimal(18,4)").IsRequired().HasColumnName("unite_price");
             entity.Property(e => e.Timestamp).IsRequired().HasColumnName("timestamp");
 
-            entity.Property(e => e.AssetId)
-                .HasColumnName("asset_id");
-            
-            entity.HasOne(e => e.Asset)
-                  .WithMany(a => a.Quotes)
-                  .HasForeignKey(e => e.AssetId)
-                  .HasConstraintName("fk_quote_asset_id");
+            entity.Property(e => e.AssetCode)
+                .HasColumnName("asset_code");
         });
 
         modelBuilder.Entity<PositionEntity>(entity =>
@@ -99,18 +79,13 @@ public class ApplicationDbContext : DbContext
             
             entity.Property(e => e.UserId)
                 .HasColumnName("user_id");
-            entity.Property(e => e.AssetId)
-                .HasColumnName("asset_id");
+            entity.Property(e => e.AssetCode)
+                .HasColumnName("asset_code");
             
             entity.HasOne(e => e.User)
                   .WithMany(u => u.Positions)
                   .HasForeignKey(e => e.UserId)
                   .HasConstraintName("fk_position_user_id");
-
-            entity.HasOne(e => e.Asset)
-                  .WithMany(a => a.Positions)
-                  .HasForeignKey(e => e.AssetId)
-                  .HasConstraintName("fk_position_asset_id");
         });
     }
 }

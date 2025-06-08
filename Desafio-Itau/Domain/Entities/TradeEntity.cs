@@ -10,7 +10,7 @@ public class TradeEntity
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
     public long UserId { get; set; }
-    public long AssetId { get; set; }
+    public string AssetCode { get; set; }
 
     public int Quantity { get; set; }
     public decimal UnitPrice { get; set; }
@@ -19,12 +19,11 @@ public class TradeEntity
     public DateTime Timestamp { get; set; }
 
     public UserEntity User { get; set; } = null!;
-    public AssetEntity Asset { get; set; } = null!;
     
-    public TradeEntity(long userId, long assetId, int quantity, decimal unitPrice, decimal brokerageFee, TradeTypeEnum type)
+    public TradeEntity(long userId, string assetCode, int quantity, decimal unitPrice, decimal brokerageFee, TradeTypeEnum type)
     {
         UserId = userId;
-        AssetId = assetId;
+        AssetCode = assetCode;
         Quantity = quantity;
         UnitPrice = unitPrice;
         BrokerageFee = brokerageFee;

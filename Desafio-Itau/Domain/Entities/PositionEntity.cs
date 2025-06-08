@@ -9,7 +9,7 @@ public class PositionEntity
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
     public long UserId { get; set; }
-    public long AssetId { get; set; }
+    public string AssetCode { get; set; }
 
     public int Quantity { get; set; }
     public decimal AveragePrice { get; set; }
@@ -17,9 +17,6 @@ public class PositionEntity
 
     [Required] 
     public UserEntity User { get; set; } = null!;
-    
-    [Required]
-    public AssetEntity Asset { get; set; } = null!;
     
     public void UpdatePosition(int totalQuantity, decimal totalValue)
     {
