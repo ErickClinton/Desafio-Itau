@@ -1,7 +1,7 @@
 using DesafioInvestimentosItau.Application.Trade.Trade.Contract.DTOs;
 using DesafioInvestimentosItau.Domain.Entities;
 
-namespace DesafioInvestimentosItau.Application.User.User.Client;
+namespace DesafioInvestimentosItau.Application.Trade.Trade.Contract.Interfaces;
 
 public interface ITradeRepository
 {
