@@ -1,11 +1,11 @@
 using System.Text.Json;
+using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Dtos;
 using DesafioInvestimentosItau.Application.Asset.Asset.Contract.Interfaces;
-using DesafioInvestimentosItau.Application.Quote.Quote.Contract.Quote.Contract;
+using DesafioInvestimentosItau.Application.Kafka.Kafka.Contract.Interfaces;
+using DesafioInvestimentosItau.Application.Quote.Quote.Contract.DTOs;
+using DesafioInvestimentosItau.Application.Quote.Quote.Contract.Interfaces;
 using DesafioInvestimentosItau.Application.Quote.Quote.Contract.Quote.Contract.DTOs;
-using DesafioInvestimentosItau.Application.User.User.Client.DTOs;
 using DesafioInvestimentosItau.Infrastructure.Data;
-using DesafioInvestimentosItau.Infrastructure.Messaging.Interface;
-using DesafioInvestimentosItau.Infrastructure.Messaging.Quotation.DTOs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -19,8 +19,8 @@ public class KafkaQuotationWorker : BackgroundService
     private readonly ILogger<KafkaQuotationWorker> _logger;
 
     public KafkaQuotationWorker(
-        IServiceScopeFactory scopeFactory, 
-        IKafkaConsumer kafkaConsumer, 
+        IServiceScopeFactory scopeFactory,
+        IKafkaConsumer kafkaConsumer,
         ILogger<KafkaQuotationWorker> logger)
     {
         _scopeFactory = scopeFactory;
@@ -31,86 +31,91 @@ public class KafkaQuotationWorker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _kafkaConsumer.Subscribe("quotation-topic");
+        _logger.LogInformation("KafkaQuotationWorker started.");
 
         while (!stoppingToken.IsCancellationRequested)
         {
             try
             {
                 var rawMessage = await _kafkaConsumer.ConsumeAsync(stoppingToken);
-                var message = JsonSerializer.Deserialize<QuotationMessageDto>(rawMessage, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                
+                if (string.IsNullOrWhiteSpace(rawMessage)) continue;
+
+                var message = JsonSerializer.Deserialize<QuotationMessageDto>(rawMessage,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 if (message != null)
                     await ProcessMessageAsync(message);
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogWarning("Kafka consumption cancelled.");
+                break;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error consuming message from Kafka.");
-                await Task.Delay(1000);
+                await Task.Delay(1000, stoppingToken);
             }
         }
+
+        _logger.LogInformation("KafkaQuotationWorker stopped.");
     }
 
     private async Task ProcessMessageAsync(QuotationMessageDto message)
-{
-    using var scope = _scopeFactory.CreateScope();
-    var assetService = scope.ServiceProvider.GetRequiredService<IAssetService>();
-    var quoteService = scope.ServiceProvider.GetRequiredService<IQuoteService>();
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-    using var transaction = await dbContext.Database.BeginTransactionAsync();
-    
-    try
     {
-        _logger.LogInformation("Processing new quotation message for AssetCode: {AssetCode}, Timestamp: {Timestamp}", message.AssetCode, message.Timestamp);
+        using var scope = _scopeFactory.CreateScope();
+        var assetService = scope.ServiceProvider.GetRequiredService<IAssetService>();
+        var quoteService = scope.ServiceProvider.GetRequiredService<IQuoteService>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        var asset = await assetService.GetByAssetCode(message.AssetCode);
-        if (asset == null)
+        await using var transaction = await dbContext.Database.BeginTransactionAsync();
+
+        try
         {
-            _logger.LogInformation("Asset not found. Creating new asset with Code: {AssetCode}", message.AssetCode);
+            _logger.LogInformation("Processing new quotation message for AssetCode: {AssetCode}, Timestamp: {Timestamp}", message.AssetCode, message.Timestamp);
 
-            var createAsset = new CreateAssetDto
+            var asset = await assetService.GetByAssetCode(message.AssetCode);
+            if (asset == null)
             {
-                Name = message.AssetName,
-                Code = message.AssetCode,
-            };
-            asset = await assetService.CreateAsync(createAsset);
+                _logger.LogInformation("Asset not found. Creating new asset: {AssetCode}", message.AssetCode);
 
-            _logger.LogInformation("Asset created with ID: {AssetId}", asset.Id);
-        }
-        else
-        {
-            _logger.LogInformation("Asset already exists with ID: {AssetId}", asset.Id);
-        }
+                var createAsset = new CreateAssetDto
+                {
+                    Code = message.AssetCode
+                };
 
-        var exists = await quoteService.ExistsAsync(message.AssetCode, message.Timestamp);
-        if (!exists)
-        {
-            _logger.LogInformation("Quotation not found. Creating new quotation for Asset ID: {AssetId}", asset.Id);
+                asset = await assetService.CreateAsync(createAsset);
+                _logger.LogInformation("Asset created with ID: {AssetId}", asset.Id);
+            }
 
-            var createQuotation = new CreateQuoteDto
+            var exists = await quoteService.ExistsAsync(message.AssetCode, message.Timestamp);
+            if (!exists)
             {
-                AssetId = asset.Id,
-                Timestamp = message.Timestamp,
-                UnitPrice = message.UnitPrice,
-            };
+                _logger.LogInformation("Quotation not found. Creating for Asset ID: {AssetId}", asset.Id);
 
-            await quoteService.CreateAsync(createQuotation);
+                var createQuotation = new CreateQuoteDto()
+                {
+                    AssetId = asset.Id,
+                    Timestamp = message.Timestamp,
+                    UnitPrice = message.UnitPrice
+                };
 
-            _logger.LogInformation("Quotation successfully created.");
+                await quoteService.CreateAsync(createQuotation);
+                _logger.LogInformation("Quotation created successfully.");
+            }
+            else
+            {
+                _logger.LogInformation("Quotation already exists for AssetCode: {AssetCode} at {Timestamp}", message.AssetCode, message.Timestamp);
+            }
+
+            await transaction.CommitAsync();
+            _logger.LogInformation("Transaction committed.");
         }
-        else
+        catch (Exception ex)
         {
-            _logger.LogInformation("Quotation already exists for AssetCode: {AssetCode} at {Timestamp}", message.AssetCode, message.Timestamp);
+            await transaction.RollbackAsync();
+            _logger.LogError(ex, "Error processing quotation. Transaction rolled back.");
         }
-
-        await transaction.CommitAsync();
-        _logger.LogInformation("Transaction committed successfully.");
     }
-    catch (Exception ex)
-    {
-        await transaction.RollbackAsync();
-        _logger.LogError(ex, "Error processing quotation message. Transaction rolled back.");
-        throw;
-    }
-}
 }
