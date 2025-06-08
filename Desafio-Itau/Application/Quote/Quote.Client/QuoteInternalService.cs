@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
 using DesafioInvestimentosItau.Application.Exceptions;
 using DesafioInvestimentosItau.Application.Quote.Quote.Contract.Quote.Contract.DTOs;
 using Microsoft.Extensions.Logging;
@@ -27,7 +28,12 @@ public class QuoteInternalService:IQuoteInternalService
 
         response.EnsureSuccessStatusCode();
 
-        var data = await response.Content.ReadFromJsonAsync<B3QuotationResponseDto>();
+        var data = await response.Content.ReadFromJsonAsync<B3QuotationResponseDto>(
+            new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
 
         if (data == null)
             throw new Exception("Response Api is null");
