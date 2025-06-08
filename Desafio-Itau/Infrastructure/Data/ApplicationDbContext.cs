@@ -11,6 +11,8 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<UserEntity> Users => Set<UserEntity>();
+    
+    public DbSet<AssetEntity> Assets => Set<AssetEntity>();
     public DbSet<TradeEntity> Trades => Set<TradeEntity>();
     public DbSet<QuoteEntity> Quotes => Set<QuoteEntity>();
     public DbSet<PositionEntity> Positions => Set<PositionEntity>();
@@ -28,6 +30,26 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Name).IsRequired().HasMaxLength(100).HasColumnName("name");
             entity.Property(e => e.Email).IsRequired().HasMaxLength(150).HasColumnName("email");
             entity.Property(e => e.BrokerageFee).HasColumnType("decimal(5,2)").HasColumnName("brokerage_fee");
+        });
+        
+        modelBuilder.Entity<AssetEntity>(entity =>
+        {
+            entity.ToTable("asset"); 
+
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.Id)
+                .HasColumnName("id");
+
+            entity.Property(e => e.Code)
+                .IsRequired()
+                .HasMaxLength(10)
+                .HasColumnName("code");
+
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(100)
+                .HasColumnName("name");
         });
 
         modelBuilder.Entity<TradeEntity>(entity =>
