@@ -47,7 +47,7 @@ public class BuyTradeStrategy : ITradeStrategy
             user.Id,
             dto.AssetCode,
             dto.Quantity,
-            asset.UnitPrice,
+            dto.UnitPrice,
             user.BrokerageFee,
             TradeTypeEnum.Buy
         );
