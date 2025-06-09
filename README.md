@@ -24,9 +24,9 @@ Sistema de controle de investimentos com funcionalidades para:
 
 ### 🔧 Configuração do Back-End
 
-1. Acesse a pasta `backend`.
 
-2. Crie um arquivo `.env` com base no `.env.example`.
+
+1. Crie um arquivo `.env` com base no `.env.example`.
 
 3. Execute as migrações:
 
@@ -42,7 +42,7 @@ dotnet run
 
 Caso deseje subir o **back-end** + **banco de dados** com Docker:
 
-1. Certifique-se de estar na pasta `backend`.
+1 - Esteja na pasta onde está o docker-compose
 2. Execute o comando abaixo:
 
 ```bash
